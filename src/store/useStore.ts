@@ -29,7 +29,7 @@ export const useStore = create<AppStore>()(
   persist(
     (set, get) => ({
       currentUser: null,
-      athletes: [],
+      athletes: MOCK_ATHLETES,
       selectedSessionId: null,
 
       login: (email, password) => {

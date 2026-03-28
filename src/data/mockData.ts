@@ -30,11 +30,6 @@ export const MOCK_USERS: MockUser[] = [
 ]
 
 export const MOCK_ATHLETES: Athlete[] = [
-  // No demo athletes — app starts clean
-  ...([] as Athlete[]),
-] as never[]
-
-const _REMOVED_DEMO_ATHLETES: Athlete[] = [
   {
     id: 'a1',
     name: 'Darius Cole',
@@ -210,6 +205,9 @@ const _REMOVED_DEMO_ATHLETES: Athlete[] = [
       },
     ],
   },
+]
+
+const _REMOVED_DEMO_ATHLETES: Athlete[] = [
   {
     id: 'a3',
     name: 'Jordan Hayes',
