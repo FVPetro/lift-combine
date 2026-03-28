@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore'
-import { Eye, EyeOff, Zap, Lock, Mail, AlertCircle } from 'lucide-react'
+import { Eye, EyeOff, Lock, Mail, AlertCircle } from 'lucide-react'
+import LiftLogo from '../components/layout/LiftLogo'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -37,16 +38,10 @@ export default function Login() {
       <div className="w-full max-w-md relative">
         {/* Logo */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-brand rounded-2xl flex items-center justify-center glow-orange">
-              <Zap className="w-6 h-6 text-white" strokeWidth={2.5} />
-            </div>
-            <div className="text-left">
-              <div className="text-2xl font-black tracking-tight text-white">LIFT</div>
-              <div className="text-xs text-slate-400 font-medium tracking-widest uppercase">Sports Management</div>
-            </div>
+          <div className="inline-flex mb-4">
+            <LiftLogo size="lg" />
           </div>
-          <p className="text-slate-400 text-sm">Combine Performance Tracker</p>
+          <p className="text-slate-400 text-sm">Combine Performance Platform</p>
         </div>
 
         {/* Card */}

@@ -185,7 +185,7 @@ export default function ExportTab({ athlete }: Props) {
               )}
               {latest.singleLegJump && (
                 <tr>
-                  <td className="py-2.5 text-slate-300 print:text-black">Single Leg Jump</td>
+                  <td className="py-2.5 text-slate-300 print:text-black">Single Leg Hop</td>
                   <td className="text-center font-bold text-white print:text-black">LSI {latest.singleLegJump.lsi.toFixed(1)}%</td>
                   <td className="text-center text-slate-500 print:text-gray-400">&gt;95% ideal</td>
                   <td className="text-center"><ScoreDot score={Math.max(0, latest.singleLegJump.lsi - 10)} /></td>

@@ -81,12 +81,12 @@ export default function OverviewTab({ athlete }: Props) {
     },
   ]
 
-  const domainLabels: [keyof typeof scores, string][] = [
-    ['speed', 'Speed'],
-    ['power', 'Power'],
-    ['agility', 'Agility'],
-    ['mobility', 'Mobility'],
-    ['symmetry', 'Symmetry'],
+  const domainLabels: [keyof typeof scores, string, string][] = [
+    ['speed', 'Speed', 'Based on 3/4 court sprint time compared to position benchmarks.'],
+    ['power', 'Power', 'Based on countermovement jump (CMJ) height — measures explosive leg power.'],
+    ['agility', 'Agility', 'Based on lane agility and shuttle run times — measures change of direction speed.'],
+    ['mobility', 'Mobility', 'Based on hip mobility and flexibility assessments — measures joint range of motion.'],
+    ['symmetry', 'Symmetry', 'Based on left/right asymmetry across jump and hip force tests — lower asymmetry = higher score.'],
   ]
 
   return (
@@ -94,17 +94,20 @@ export default function OverviewTab({ athlete }: Props) {
       {/* Score summary row */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {/* Overall */}
-        <div className="sm:col-span-1 card p-4 flex flex-col items-center justify-center">
+        <div className="sm:col-span-1 card p-4 flex flex-col items-center justify-center relative group">
           <div className={clsx('text-5xl font-black', getScoreColor(scores.overall))}>{scores.overall}</div>
           <div className="text-slate-500 text-[10px] font-bold uppercase tracking-wider mt-1">Overall</div>
           <div className={clsx('text-[10px] font-black mt-1 px-2 py-0.5 rounded-full border', getScoreBg(scores.overall))}>
             {getScoreLabel(scores.overall)}
           </div>
+          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
+            Weighted composite of all domain scores — speed, power, agility, mobility, and symmetry.
+          </div>
         </div>
-        {domainLabels.map(([key, label]) => {
+        {domainLabels.map(([key, label, tooltip]) => {
           const val = scores[key]
           return (
-            <div key={key} className="card p-4 flex flex-col items-center justify-center">
+            <div key={key} className="card p-4 flex flex-col items-center justify-center relative group">
               <div className={clsx('text-3xl font-black', getScoreColor(val))}>{val || '—'}</div>
               <div className="text-slate-500 text-[10px] font-bold uppercase tracking-wider mt-1">{label}</div>
               {val > 0 && (
@@ -112,6 +115,9 @@ export default function OverviewTab({ athlete }: Props) {
                   <TrendIcon values={sessions.map(s => scoreSession(s, position)[key])} />
                 </div>
               )}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
+                {tooltip}
+              </div>
             </div>
           )
         })}
@@ -209,30 +215,39 @@ export default function OverviewTab({ athlete }: Props) {
           <h3 className="font-bold text-white text-sm mb-4">Asymmetry Summary <span className="text-slate-500 font-normal text-xs ml-1">— latest session</span></h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {latest.cmj && (
-              <div className="bg-navy-900 rounded-xl p-3">
+              <div className="bg-navy-900 rounded-xl p-3 relative group">
                 <div className="text-slate-500 text-xs font-semibold mb-2">CMJ Bilateral</div>
                 <div className={clsx('text-2xl font-black', getAsymmetryColor(latest.cmj.asymmetryPct))}>
                   {latest.cmj.asymmetryPct.toFixed(1)}%
                 </div>
                 <div className="text-slate-600 text-xs mt-0.5">asymmetry index</div>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
+                  Measures left vs. right force imbalance during a bilateral countermovement jump. Calculated as: |Left − Right| / Average × 100. Lower % = more symmetrical. Under 10% is ideal.
+                </div>
               </div>
             )}
             {latest.singleLegHip && (
-              <div className="bg-navy-900 rounded-xl p-3">
+              <div className="bg-navy-900 rounded-xl p-3 relative group">
                 <div className="text-slate-500 text-xs font-semibold mb-2">Hip Force</div>
                 <div className={clsx('text-2xl font-black', getAsymmetryColor(latest.singleLegHip.asymmetryPct))}>
                   {latest.singleLegHip.asymmetryPct.toFixed(1)}%
                 </div>
                 <div className="text-slate-600 text-xs mt-0.5">L/R asymmetry</div>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
+                  Compares peak isometric hip force between left and right legs. Calculated as: |Left − Right| / Average × 100. Over 15% exceeds the clinical threshold and warrants a sports medicine review.
+                </div>
               </div>
             )}
             {latest.singleLegJump && (
-              <div className="bg-navy-900 rounded-xl p-3">
-                <div className="text-slate-500 text-xs font-semibold mb-2">SL Jump LSI</div>
+              <div className="bg-navy-900 rounded-xl p-3 relative group">
+                <div className="text-slate-500 text-xs font-semibold mb-2">SL Hop LSI</div>
                 <div className={clsx('text-2xl font-black', getAsymmetryColor(100 - latest.singleLegJump.lsi))}>
                   {latest.singleLegJump.lsi.toFixed(1)}%
                 </div>
                 <div className="text-slate-600 text-xs mt-0.5">limb symmetry index</div>
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
+                  Limb Symmetry Index — compares single-leg hop height between left and right. Calculated as: Weaker Leg / Stronger Leg × 100. 95%+ is ideal; below 85% is the return-to-sport threshold.
+                </div>
               </div>
             )}
           </div>

@@ -38,17 +38,29 @@ export interface MovementAssessment {
   images?: string[]
 }
 
+export interface CMJRep {
+  rep: number
+  conPeakForcePct?: number
+  eccPeakForcePct?: number
+}
+
 export interface CMJData {
   jumpHeightCm: number
   rsiModified: number
-  conPeakForceN: number
-  eccMeanForceN: number
+  conPeakForceN?: number
+  eccMeanForceN?: number
   asymmetryPct: number
   peakPowerW: number
   flightTimeMs: number
   contractionTimeMs: number
+  // Aggregate stats for force metrics
+  conPeakForceSD?: number
+  conPeakForceCoV?: number
+  eccPeakForceSD?: number
+  eccPeakForceCoV?: number
   notes?: string
   images?: string[]
+  reps?: CMJRep[]
 }
 
 export interface ForceSymmetryData {
@@ -64,6 +76,8 @@ export interface JumpSymmetryData {
   rightHeightCm: number
   leftRSIMod: number
   rightRSIMod: number
+  leftMeanRSI?: number
+  rightMeanRSI?: number
   lsi: number
   notes?: string
   images?: string[]

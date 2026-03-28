@@ -1,10 +1,10 @@
 import { useState, useRef } from 'react'
-import { Athlete, AssessmentSession, MovementAssessment, CMJData, ForceSymmetryData, JumpSymmetryData, TimedTest } from '../../../types'
+import { Athlete, AssessmentSession, MovementAssessment, CMJData, CMJRep, ForceSymmetryData, JumpSymmetryData, TimedTest } from '../../../types'
 import { useStore } from '../../../store/useStore'
 import { OVERHEAD_SQUAT_FAULTS, SINGLE_LEG_SQUAT_FAULTS } from '../../../data/benchmarks'
 import { scoreSession, getScoreBg, cmToInches, formatHeight } from '../../../utils/scoring'
 import AsymmetryBar from '../../charts/AsymmetryBar'
-import { Plus, ChevronDown, ChevronUp, Upload, X, CheckCircle2, Circle, Save, Trash2, Camera } from 'lucide-react'
+import { Plus, ChevronDown, ChevronUp, Upload, X, CheckCircle2, Circle, Save, Trash2, Camera, Minus } from 'lucide-react'
 import { BENCHMARKS } from '../../../data/benchmarks'
 import { format } from 'date-fns'
 import clsx from 'clsx'
@@ -159,6 +159,7 @@ function CMJModule({ data, onSave }: { data?: CMJData; onSave: (d: CMJData) => v
   const [vals, setVals] = useState<Partial<CMJData>>(data ?? {})
   const [notes, setNotes] = useState(data?.notes ?? '')
   const [images, setImages] = useState<string[]>(data?.images ?? [])
+  const [reps, setReps] = useState<CMJRep[]>(data?.reps ?? [{ rep: 1 }])
   const fileRef = useRef<HTMLInputElement>(null)
 
   const n = (k: keyof CMJData) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -172,8 +173,20 @@ function CMJModule({ data, onSave }: { data?: CMJData; onSave: (d: CMJData) => v
     })
   }
 
+  const updateRep = (i: number, field: 'conPeakForcePct' | 'eccPeakForcePct', val: string) => {
+    setReps(prev => prev.map((r, idx) => idx === i ? { ...r, [field]: parseFloat(val) || undefined } : r))
+  }
+
+  const addRep = () => setReps(prev => [...prev, { rep: prev.length + 1 }])
+  const removeRep = (i: number) => setReps(prev => prev.filter((_, idx) => idx !== i).map((r, idx) => ({ ...r, rep: idx + 1 })))
+
+  const avg = (field: 'conPeakForcePct' | 'eccPeakForcePct') => {
+    const vs = reps.map(r => r[field]).filter((v): v is number => v != null && v > 0)
+    return vs.length ? (vs.reduce((a, b) => a + b, 0) / vs.length).toFixed(1) : '—'
+  }
+
   const save = () => {
-    onSave({ ...vals as CMJData, notes, images })
+    onSave({ ...vals as CMJData, notes, images, reps })
     setOpen(false)
   }
 
@@ -184,7 +197,10 @@ function CMJModule({ data, onSave }: { data?: CMJData; onSave: (d: CMJData) => v
           {data ? <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" /> : <Circle className="w-5 h-5 text-slate-600 flex-shrink-0" />}
           <div className="text-left">
             <div className="font-semibold text-white text-sm">CMJ — ForceDecks</div>
-            {data && <div className="text-xs text-slate-500 mt-0.5">{cmToInches(data.jumpHeightCm)} jump · {data.asymmetryPct.toFixed(1)}% asym</div>}
+            {data && <div className="text-xs text-slate-500 mt-0.5">
+              {cmToInches(data.jumpHeightCm)} jump · {data.asymmetryPct.toFixed(1)}% asym
+              {data.reps?.length ? <span className="ml-1 text-emerald-400">· {data.reps.length} reps</span> : null}
+            </div>}
           </div>
         </div>
         {open ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
@@ -192,12 +208,12 @@ function CMJModule({ data, onSave }: { data?: CMJData; onSave: (d: CMJData) => v
 
       {open && (
         <div className="px-4 pb-4 space-y-4 border-t border-navy-700 pt-3">
+
+          {/* Summary fields */}
           <div className="grid grid-cols-2 gap-3">
             {([
               ['jumpHeightCm', 'Jump Height (cm)', '72.4'],
               ['rsiModified', 'RSI-Modified', '0.42'],
-              ['conPeakForceN', 'Concentric Peak Force (N)', '2100'],
-              ['eccMeanForceN', 'Eccentric Mean Force (N)', '1400'],
               ['asymmetryPct', 'Asymmetry Index (%)', '6.5'],
               ['peakPowerW', 'Peak Power (W)', '4200'],
               ['flightTimeMs', 'Flight Time (ms)', '610'],
@@ -210,10 +226,113 @@ function CMJModule({ data, onSave }: { data?: CMJData; onSave: (d: CMJData) => v
               </div>
             ))}
           </div>
+
+          {/* Per-rep force inputs */}
+          <div className="bg-navy-900 rounded-xl overflow-hidden">
+            <div className="flex items-center justify-between px-3 py-2.5 border-b border-navy-700">
+              <span className="text-xs font-bold text-white">Per-Rep Force Data</span>
+              <button onClick={addRep} className="flex items-center gap-1 text-[11px] text-brand hover:text-brand/80 font-semibold transition-colors">
+                <Plus className="w-3.5 h-3.5" /> Add Rep
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="text-slate-500 text-[10px] uppercase tracking-wider border-b border-navy-800">
+                    <th className="px-3 py-2 text-left w-10">Rep</th>
+                    <th className="px-3 py-2 text-right">Con. Peak Force (%)</th>
+                    <th className="px-3 py-2 text-right">Ecc. Peak Force (%)</th>
+                    <th className="px-3 py-2 w-8" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-navy-800">
+                  {reps.map((r, i) => (
+                    <tr key={i}>
+                      <td className="px-3 py-2 font-bold text-white">{r.rep}</td>
+                      <td className="px-3 py-2">
+                        <input
+                          type="number" step="0.1" placeholder="e.g. 2.1"
+                          value={r.conPeakForcePct ?? ''}
+                          onChange={e => updateRep(i, 'conPeakForcePct', e.target.value)}
+                          className="input-field text-sm py-1 text-right w-full"
+                        />
+                      </td>
+                      <td className="px-3 py-2">
+                        <input
+                          type="number" step="0.1" placeholder="e.g. 6.6"
+                          value={r.eccPeakForcePct ?? ''}
+                          onChange={e => updateRep(i, 'eccPeakForcePct', e.target.value)}
+                          className="input-field text-sm py-1 text-right w-full"
+                        />
+                      </td>
+                      <td className="px-3 py-2">
+                        <button onClick={() => removeRep(i)} className="text-slate-600 hover:text-red-400 transition-colors">
+                          <Minus className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {/* Averages row */}
+                  <tr className="bg-navy-800 text-[11px] font-bold text-white">
+                    <td className="px-3 py-2">AVG</td>
+                    <td className="px-3 py-2 text-right text-emerald-400">{avg('conPeakForcePct')}%</td>
+                    <td className="px-3 py-2 text-right text-emerald-400">{avg('eccPeakForcePct')}%</td>
+                    <td />
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* SD and CoV */}
+            <div className="border-t border-navy-700 px-3 py-3 grid grid-cols-2 gap-3">
+              <div>
+                <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2">Con. Peak Force</div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="label text-[10px]">SD</label>
+                    <input type="number" step="0.1" placeholder="e.g. 2"
+                      value={(vals.conPeakForceSD) || ''}
+                      onChange={e => setVals(prev => ({ ...prev, conPeakForceSD: parseFloat(e.target.value) || undefined }))}
+                      className="input-field text-sm py-1" />
+                  </div>
+                  <div>
+                    <label className="label text-[10px]">CoV (%)</label>
+                    <input type="number" step="0.1" placeholder="e.g. 203"
+                      value={(vals.conPeakForceCoV) || ''}
+                      onChange={e => setVals(prev => ({ ...prev, conPeakForceCoV: parseFloat(e.target.value) || undefined }))}
+                      className="input-field text-sm py-1" />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-2">Ecc. Peak Force</div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="label text-[10px]">SD</label>
+                    <input type="number" step="0.1" placeholder="e.g. 6"
+                      value={(vals.eccPeakForceSD) || ''}
+                      onChange={e => setVals(prev => ({ ...prev, eccPeakForceSD: parseFloat(e.target.value) || undefined }))}
+                      className="input-field text-sm py-1" />
+                  </div>
+                  <div>
+                    <label className="label text-[10px]">CoV (%)</label>
+                    <input type="number" step="0.1" placeholder="e.g. 96"
+                      value={(vals.eccPeakForceCoV) || ''}
+                      onChange={e => setVals(prev => ({ ...prev, eccPeakForceCoV: parseFloat(e.target.value) || undefined }))}
+                      className="input-field text-sm py-1" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Notes */}
           <div>
             <label className="label">Notes / VALD Summary</label>
             <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className="input-field resize-none text-sm" />
           </div>
+
+          {/* Chart upload */}
           <div>
             <label className="label">Upload VALD Graphs / Screenshots</label>
             <div className="flex flex-wrap gap-2">
@@ -233,6 +352,7 @@ function CMJModule({ data, onSave }: { data?: CMJData; onSave: (d: CMJData) => v
               <input ref={fileRef} type="file" accept="image/*,application/pdf" multiple onChange={handleImage} className="hidden" />
             </div>
           </div>
+
           {data && (
             <div className="bg-navy-900 rounded-xl p-3">
               <AsymmetryBar leftValue={vals.conPeakForceN ? vals.conPeakForceN * (1 - (vals.asymmetryPct ?? 0) / 200) : 0}
@@ -240,6 +360,7 @@ function CMJModule({ data, onSave }: { data?: CMJData; onSave: (d: CMJData) => v
                 asymmetryPct={vals.asymmetryPct ?? 0} unit="N" />
             </div>
           )}
+
           <button onClick={save} className="btn-primary w-full flex items-center justify-center gap-2">
             <Save className="w-4 h-4" /> Save CMJ Data
           </button>
@@ -270,7 +391,7 @@ function ForceSymModule({ title, subtitle, data, onSave, isJump }: {
   }
 
   const fields: [string, string, string][] = isJump
-    ? [['leftHeightCm', 'Left Jump Height (cm)', '44'], ['rightHeightCm', 'Right Jump Height (cm)', '46'], ['leftRSIMod', 'Left RSI-Mod', '0.38'], ['rightRSIMod', 'Right RSI-Mod', '0.41'], ['lsi', 'Limb Symmetry Index (%)', '95.6']]
+    ? [['leftHeightCm', 'Left Hop Height (cm)', '44'], ['rightHeightCm', 'Right Hop Height (cm)', '46'], ['leftRSIMod', 'Left RSI-Mod', '0.38'], ['rightRSIMod', 'Right RSI-Mod', '0.41'], ['leftMeanRSI', 'Left Mean RSI (Flight/Contact)', '0.42'], ['rightMeanRSI', 'Right Mean RSI (Flight/Contact)', '0.44'], ['lsi', 'Limb Symmetry Index (%)', '95.6']]
     : [['leftForceN', 'Left Force (N)', '320'], ['rightForceN', 'Right Force (N)', '340'], ['asymmetryPct', 'Asymmetry (%)', '6.3']]
 
   const isComplete = data !== undefined
@@ -514,7 +635,7 @@ export default function TestsTab({ athlete }: Props) {
               <CMJModule data={active.cmj} onSave={d => upd({ cmj: d })} />
               <ForceSymModule title="Single Leg Hip (ForceDecks)" subtitle="ForceDecks isometric hip test"
                 data={active.singleLegHip} onSave={d => upd({ singleLegHip: d })} />
-              <ForceSymModule title="Single Leg Jump (ForceDecks)" subtitle="LSI & height symmetry"
+              <ForceSymModule title="Single Leg Hop (ForceDecks)" subtitle="LSI & height symmetry"
                 data={active.singleLegJump} onSave={d => upd({ singleLegJump: d })} isJump />
             </div>
 

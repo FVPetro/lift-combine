@@ -2,10 +2,11 @@ import { useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useCurrentUser, useStore } from '../../store/useStore'
 import {
-  LayoutDashboard, Users, LogOut, Zap, ChevronLeft,
-  Menu, X, User
+  LayoutDashboard, Users, LogOut, ChevronLeft,
+  Menu, User
 } from 'lucide-react'
 import clsx from 'clsx'
+import LiftLogo from './LiftLogo'
 
 interface LayoutProps {
   children: React.ReactNode
@@ -34,17 +35,7 @@ export default function Layout({ children, showBack, backLabel }: LayoutProps) {
     <div className="flex flex-col h-full">
       {/* Brand */}
       <div className="px-5 py-6 border-b border-navy-700">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-brand rounded-xl flex items-center justify-center glow-orange flex-shrink-0">
-            <Zap className="w-5 h-5 text-white" strokeWidth={2.5} />
-          </div>
-          <div>
-            <div className="text-lg font-black tracking-tight text-white leading-none">LIFT</div>
-            <div className="text-[10px] text-slate-500 font-medium tracking-widest uppercase leading-none mt-0.5">
-              Sports Management
-            </div>
-          </div>
-        </div>
+        <LiftLogo size="md" />
       </div>
 
       {/* Nav */}
@@ -137,7 +128,7 @@ export default function Layout({ children, showBack, backLabel }: LayoutProps) {
           <div className="flex-1" />
 
           <div className="text-xs text-slate-500 font-medium">
-            Combine Performance Tracker
+            Combine Performance Platform
           </div>
         </header>
 
