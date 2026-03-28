@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: #070d1a;
+    color: #f1f5f9;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0c1525;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #243d61;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #f97316;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-navy-800 border border-navy-600 rounded-2xl;
+  }
+
+  .card-glow {
+    @apply bg-navy-800 border border-navy-600 rounded-2xl;
+    box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.05), 0 4px 24px rgba(0,0,0,0.4);
+  }
+
+  .btn-primary {
+    @apply bg-brand hover:bg-brand-light text-white font-semibold rounded-xl px-4 py-2.5 transition-all duration-150 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-navy-700 hover:bg-navy-600 text-slate-300 font-medium rounded-xl px-4 py-2.5 transition-all duration-150 border border-navy-600;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-navy-700 text-slate-400 hover:text-white font-medium rounded-xl px-3 py-2 transition-all duration-150;
+  }
+
+  .input-field {
+    @apply bg-navy-900 border border-navy-600 text-white rounded-xl px-4 py-3 w-full focus:outline-none focus:border-brand/60 focus:ring-1 focus:ring-brand/30 transition-all placeholder:text-slate-600;
+  }
+
+  .label {
+    @apply text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1.5 block;
+  }
+
+  .badge-green {
+    @apply bg-green-500/15 border border-green-500/30 text-green-400 text-xs font-bold px-2.5 py-1 rounded-full;
+  }
+  .badge-yellow {
+    @apply bg-yellow-500/15 border border-yellow-500/30 text-yellow-400 text-xs font-bold px-2.5 py-1 rounded-full;
+  }
+  .badge-red {
+    @apply bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-bold px-2.5 py-1 rounded-full;
+  }
+  .badge-orange {
+    @apply bg-orange-500/15 border border-orange-500/30 text-orange-400 text-xs font-bold px-2.5 py-1 rounded-full;
+  }
+  .badge-blue {
+    @apply bg-blue-500/15 border border-blue-500/30 text-blue-400 text-xs font-bold px-2.5 py-1 rounded-full;
+  }
+}
+
+/* Grid background */
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(249,115,22,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249,115,22,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Glow effects */
+.glow-orange {
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.3), 0 0 60px rgba(249, 115, 22, 0.1);
+}
+
+.score-ring {
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+/* Print styles */
+@media print {
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+  body { background: white !important; color: black !important; }
+  .card, .card-glow {
+    border: 1px solid #e2e8f0 !important;
+    background: white !important;
+    box-shadow: none !important;
+  }
+}
