@@ -31,7 +31,7 @@ export default function LiftLogo({ size = 'md' }: Props) {
           LIFT
         </div>
         <div className="text-[10px] text-slate-500 font-medium tracking-widest uppercase leading-none mt-0.5">
-          Imaging
+          Basketball
         </div>
       </div>
     </div>
