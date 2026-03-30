@@ -3,7 +3,7 @@ import { Athlete, MockUser } from '../types'
 export const MOCK_USERS: MockUser[] = [
   {
     id: 'u1',
-    name: 'Mike Rivera',
+    name: 'Eric VanTine',
     email: 'trainer@lift.com',
     password: 'password',
     role: 'trainer',
@@ -41,7 +41,7 @@ export const MOCK_ATHLETES: Athlete[] = [
     dateOfBirth: '2003-04-12',
     school: 'Duke University',
     agency: 'Lift Sports Management',
-    photo: 'https://i.pravatar.cc/300?img=11',
+    photo: 'https://randomuser.me/api/portraits/men/83.jpg',
     notes: 'Elite playmaker with elite court vision. Needs to improve lateral quickness and hip stability.',
     createdAt: '2024-10-01',
     sessions: [
@@ -152,7 +152,7 @@ export const MOCK_ATHLETES: Athlete[] = [
     dateOfBirth: '2002-09-03',
     school: 'Kentucky',
     agency: 'Lift Sports Management',
-    photo: 'https://i.pravatar.cc/300?img=15',
+    photo: 'https://randomuser.me/api/portraits/men/45.jpg',
     notes: 'Dynamic scorer. Elite athleticism. Needs hip mobility and landing mechanics.',
     createdAt: '2024-10-01',
     sessions: [

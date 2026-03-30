@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAthletes, useCurrentUser, useStore } from '../store/useStore'
 import { scoreSession } from '../utils/scoring'
 import { formatHeight, getScoreBg, getScoreColor } from '../utils/scoring'
-import { Users, Plus, Search, LogOut, Zap, TrendingUp, Activity, Award } from 'lucide-react'
+import { Users, Plus, Search, LogOut, TrendingUp, Activity, Award } from 'lucide-react'
+import LiftLogo from '../components/layout/LiftLogo'
 import { format } from 'date-fns'
 import clsx from 'clsx'
 
@@ -43,15 +44,7 @@ export default function Dashboard() {
       {/* Top Nav */}
       <header className="border-b border-navy-700 bg-navy-950/80 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-brand rounded-xl flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" strokeWidth={2.5} />
-            </div>
-            <div>
-              <span className="font-black text-white tracking-tight">LIFT</span>
-              <span className="text-slate-500 text-sm ml-2 font-medium">Combine Tracker</span>
-            </div>
-          </div>
+          <LiftLogo size="sm" />
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2.5">
               {user?.avatar && (
