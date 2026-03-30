@@ -62,11 +62,10 @@ export default function PositionRankChart({ session, position }: Props) {
     return 'text-red-400'
   }
 
-  const getRankSuffix = (n: number) => {
-    if (n === 1) return 'st'
-    if (n === 2) return 'nd'
-    if (n === 3) return 'rd'
-    return 'th'
+  const getOrdinal = (n: number) => {
+    const s = ['th', 'st', 'nd', 'rd']
+    const v = n % 100
+    return n + (s[(v - 20) % 10] || s[v] || s[0])
   }
 
   return (
@@ -88,7 +87,7 @@ export default function PositionRankChart({ session, position }: Props) {
               </div>
               <div className="flex items-center gap-3">
                 <span className={clsx('text-xs font-black', getTextColor(row.percentile))}>
-                  {row.rank}{getRankSuffix(row.rank)} / {row.total}
+                  {getOrdinal(row.rank)} / {row.total}
                 </span>
                 <span className={clsx('text-[11px] font-bold px-2 py-0.5 rounded-full', {
                   'bg-emerald-500/15 text-emerald-400': row.percentile >= 75,
@@ -96,7 +95,7 @@ export default function PositionRankChart({ session, position }: Props) {
                   'bg-yellow-500/15 text-yellow-400': row.percentile >= 25 && row.percentile < 50,
                   'bg-red-500/15 text-red-400': row.percentile < 25,
                 })}>
-                  {row.percentile}th %ile
+                  {getOrdinal(row.percentile)} Percentile
                 </span>
               </div>
             </div>
