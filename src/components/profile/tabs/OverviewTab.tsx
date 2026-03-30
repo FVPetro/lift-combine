@@ -3,6 +3,7 @@ import { scoreSession, getScoreColor, getScoreBg, getScoreLabel, getAsymmetryCol
 import { BENCHMARKS } from '../../../data/benchmarks'
 import PerformanceRadar from '../../charts/PerformanceRadar'
 import ProgressLine from '../../charts/ProgressLine'
+import PositionRankChart from '../../charts/PositionRankChart'
 import { TrendingUp, TrendingDown, Minus, AlertTriangle, Star } from 'lucide-react'
 import { format } from 'date-fns'
 import clsx from 'clsx'
@@ -183,6 +184,9 @@ export default function OverviewTab({ athlete }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Position Rankings */}
+      <PositionRankChart session={latest} position={position} />
 
       {/* Progress charts */}
       {sessions.length > 1 && (
