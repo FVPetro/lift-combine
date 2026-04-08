@@ -32,16 +32,16 @@ export const MOCK_USERS: MockUser[] = [
 export const MOCK_ATHLETES: Athlete[] = [
   {
     id: 'a1',
-    name: 'Darius Cole',
+    name: 'Jeremy Fears',
     position: 'PG',
-    heightInches: 73,
-    weightLbs: 183,
+    heightInches: 74,
+    weightLbs: 190,
     wingspanInches: 76,
     standingReachInches: 96,
     dateOfBirth: '2003-04-12',
-    school: 'Duke University',
+    school: 'Michigan State',
     agency: 'Lift Sports Management',
-    photo: 'https://randomuser.me/api/portraits/men/83.jpg',
+    photo: '/athletes/jeremy-fears.jpg',
     notes: 'Elite playmaker with elite court vision. Needs to improve lateral quickness and hip stability.',
     createdAt: '2024-10-01',
     sessions: [

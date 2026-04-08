@@ -65,12 +65,24 @@ export default function ProfileHeader({ athlete }: Props) {
           <div className="relative group flex-shrink-0">
             <div className="w-24 h-24 rounded-2xl overflow-hidden ring-4 ring-navy-900 bg-navy-700">
               {athlete.photo ? (
-                <img src={athlete.photo} alt={athlete.name} className="w-full h-full object-cover" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <User className="w-10 h-10 text-slate-600" />
-                </div>
-              )}
+                <img
+                  src={athlete.photo}
+                  alt={athlete.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement
+                    img.style.display = 'none'
+                    const fallback = img.parentElement?.querySelector('.photo-fallback') as HTMLElement
+                    if (fallback) fallback.style.display = 'flex'
+                  }}
+                />
+              ) : null}
+              <div
+                className="photo-fallback w-full h-full items-center justify-center"
+                style={{ display: athlete.photo ? 'none' : 'flex' }}
+              >
+                <User className="w-10 h-10 text-slate-600" />
+              </div>
             </div>
             <label className="absolute inset-0 rounded-2xl bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
               <Camera className="w-5 h-5 text-white" />

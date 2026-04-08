@@ -34,8 +34,10 @@ export default function AthleteCard({ athlete }: Props) {
               src={athlete.photo}
               alt={athlete.name}
               className="w-16 h-16 rounded-2xl object-cover ring-2 ring-navy-600 group-hover:ring-brand/30 transition-all"
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden') }}
             />
-          ) : (
+          ) : null}
+          {(!athlete.photo) && (
             <div className="w-16 h-16 rounded-2xl bg-navy-700 flex items-center justify-center ring-2 ring-navy-600">
               <span className="text-xl font-bold text-slate-400">
                 {athlete.name.split(' ').map(n => n[0]).join('')}
