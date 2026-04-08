@@ -9,11 +9,11 @@ interface Props {
 }
 
 const POSITION_COLORS: Record<string, string> = {
-  PG: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  SG: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-  SF: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-  PF: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
-  C: 'bg-red-500/20 text-red-300 border-red-500/30',
+  PG: 'bg-blue-600 text-white border-blue-700',
+  SG: 'bg-purple-600 text-white border-purple-700',
+  SF: 'bg-emerald-600 text-white border-emerald-700',
+  PF: 'bg-orange-600 text-white border-orange-700',
+  C: 'bg-red-600 text-white border-red-700',
 }
 
 export default function AthleteCard({ athlete }: Props) {
