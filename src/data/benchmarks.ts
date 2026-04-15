@@ -8,12 +8,12 @@ export interface PositionBenchmark {
   cmjHeightCm: number
   laneAgilitySeconds: number
   sprint34Seconds: number
-  shuttleSeconds: number
+  proAgilitySeconds: number
   // elite thresholds
   eliteCmjCm: number
   eliteLaneAgility: number
   eliteSprint34: number
-  eliteShuttle: number
+  eliteProAgility: number
 }
 
 export const BENCHMARKS: Record<Position, PositionBenchmark> = {
@@ -25,11 +25,11 @@ export const BENCHMARKS: Record<Position, PositionBenchmark> = {
     cmjHeightCm: 76.2,
     laneAgilitySeconds: 11.10,
     sprint34Seconds: 3.20,
-    shuttleSeconds: 3.00,
+    proAgilitySeconds: 3.00,
     eliteCmjCm: 86.4,   // 34"
     eliteLaneAgility: 10.6,
     eliteSprint34: 3.00,
-    eliteShuttle: 2.80,
+    eliteProAgility: 2.80,
   },
   SG: {
     heightInches: 75.5,
@@ -39,11 +39,11 @@ export const BENCHMARKS: Record<Position, PositionBenchmark> = {
     cmjHeightCm: 76.2,
     laneAgilitySeconds: 11.15,
     sprint34Seconds: 3.20,
-    shuttleSeconds: 2.95,
+    proAgilitySeconds: 2.95,
     eliteCmjCm: 88.9,   // 35"
     eliteLaneAgility: 10.5,
     eliteSprint34: 2.97,
-    eliteShuttle: 2.75,
+    eliteProAgility: 2.75,
   },
   SF: {
     heightInches: 78,
@@ -53,11 +53,11 @@ export const BENCHMARKS: Record<Position, PositionBenchmark> = {
     cmjHeightCm: 74.9,
     laneAgilitySeconds: 11.35,
     sprint34Seconds: 3.30,
-    shuttleSeconds: 3.00,
+    proAgilitySeconds: 3.00,
     eliteCmjCm: 88.9,   // 35"
     eliteLaneAgility: 10.7,
     eliteSprint34: 3.05,
-    eliteShuttle: 2.85,
+    eliteProAgility: 2.85,
   },
   PF: {
     heightInches: 80,
@@ -67,11 +67,11 @@ export const BENCHMARKS: Record<Position, PositionBenchmark> = {
     cmjHeightCm: 73.7,
     laneAgilitySeconds: 11.55,
     sprint34Seconds: 3.30,
-    shuttleSeconds: 3.10,
+    proAgilitySeconds: 3.10,
     eliteCmjCm: 86.4,   // 34"
     eliteLaneAgility: 10.9,
     eliteSprint34: 3.10,
-    eliteShuttle: 2.90,
+    eliteProAgility: 2.90,
   },
   C: {
     heightInches: 82,
@@ -81,11 +81,11 @@ export const BENCHMARKS: Record<Position, PositionBenchmark> = {
     cmjHeightCm: 70.8,
     laneAgilitySeconds: 11.80,
     sprint34Seconds: 3.40,
-    shuttleSeconds: 3.15,
+    proAgilitySeconds: 3.15,
     eliteCmjCm: 81.3,   // 32"
     eliteLaneAgility: 11.1,
     eliteSprint34: 3.20,
-    eliteShuttle: 2.95,
+    eliteProAgility: 2.95,
   },
 }
 

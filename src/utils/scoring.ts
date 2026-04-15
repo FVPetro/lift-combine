@@ -29,10 +29,13 @@ export function scoreSession(session: AssessmentSession, position: Position): Sc
   const bm = BENCHMARKS[position]
   const scores: number[] = []
 
-  // Speed (sprint + shuttle)
+  // Speed (sprint + pro agility avg)
   const speedScores: number[] = []
   if (session.sprint34) speedScores.push(scoreLower(session.sprint34.timeSeconds, bm.sprint34Seconds))
-  if (session.shuttle) speedScores.push(scoreLower(session.shuttle.timeSeconds, bm.shuttleSeconds))
+  if (session.proAgility) {
+    const proAgilityAvg = (session.proAgility.rightTimeSeconds + session.proAgility.leftTimeSeconds) / 2
+    speedScores.push(scoreLower(proAgilityAvg, bm.proAgilitySeconds))
+  }
   const speed = speedScores.length ? Math.round(speedScores.reduce((a, b) => a + b, 0) / speedScores.length) : 0
 
   // Power (CMJ jump height)

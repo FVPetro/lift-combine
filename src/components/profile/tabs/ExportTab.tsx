@@ -210,13 +210,15 @@ export default function ExportTab({ athlete }: Props) {
                   <td className="text-slate-500 text-xs print:text-gray-400">{latest.sprint34.notes}</td>
                 </tr>
               )}
-              {latest.shuttle && (
+              {latest.proAgility && (
                 <tr>
-                  <td className="py-2.5 text-slate-300 print:text-black">Reactive Shuttle</td>
-                  <td className="text-center font-bold text-white print:text-black">{latest.shuttle.timeSeconds}s</td>
-                  <td className="text-center text-slate-500 print:text-gray-400">{bm.shuttleSeconds}s</td>
-                  <td className="text-center"><ScoreDot score={Math.min(100, Math.round((bm.shuttleSeconds / latest.shuttle.timeSeconds) * 100))} /></td>
-                  <td className="text-slate-500 text-xs print:text-gray-400">{latest.shuttle.notes}</td>
+                  <td className="py-2.5 text-slate-300 print:text-black">Pro Agility (5-10-5)</td>
+                  <td className="text-center font-bold text-white print:text-black">
+                    R: {latest.proAgility.rightTimeSeconds}s / L: {latest.proAgility.leftTimeSeconds}s
+                  </td>
+                  <td className="text-center text-slate-500 print:text-gray-400">{bm.proAgilitySeconds}s</td>
+                  <td className="text-center"><ScoreDot score={Math.min(100, Math.round((bm.proAgilitySeconds / ((latest.proAgility.rightTimeSeconds + latest.proAgility.leftTimeSeconds) / 2)) * 100))} /></td>
+                  <td className="text-slate-500 text-xs print:text-gray-400">{latest.proAgility.notes}</td>
                 </tr>
               )}
             </tbody>

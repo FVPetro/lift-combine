@@ -40,10 +40,11 @@ export default function PositionRankChart({ session, position }: Props) {
     rows.push({ label: '3/4 Sprint', value: `${session.sprint34.timeSeconds}s`, rank, total, percentile, higherIsBetter: false })
   }
 
-  if (session.shuttle) {
-    const dataset = history.map(h => h.shuttleSeconds)
-    const { rank, total, percentile } = getPercentileRank(session.shuttle.timeSeconds, dataset, false)
-    rows.push({ label: 'Shuttle', value: `${session.shuttle.timeSeconds}s`, rank, total, percentile, higherIsBetter: false })
+  if (session.proAgility) {
+    const avg = (session.proAgility.rightTimeSeconds + session.proAgility.leftTimeSeconds) / 2
+    const dataset = history.map(h => h.proAgilitySeconds)
+    const { rank, total, percentile } = getPercentileRank(avg, dataset, false)
+    rows.push({ label: 'Pro Agility', value: `${avg.toFixed(2)}s avg`, rank, total, percentile, higherIsBetter: false })
   }
 
   if (rows.length === 0) return null

@@ -74,9 +74,11 @@ export default function OverviewTab({ athlete }: Props) {
       higher: false,
     },
     {
-      label: 'Shuttle',
-      athlete: latest.shuttle?.timeSeconds ?? null,
-      benchmark: bm.shuttleSeconds,
+      label: 'Pro Agility (avg)',
+      athlete: latest.proAgility
+        ? parseFloat(((latest.proAgility.rightTimeSeconds + latest.proAgility.leftTimeSeconds) / 2).toFixed(2))
+        : null,
+      benchmark: bm.proAgilitySeconds,
       unit: 's',
       higher: false,
     },

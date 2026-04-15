@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "Golf+ Installer (Dev)",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["./node_modules/.bin/vite", "--port", "5175"],
+      "name": "lift-combine",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
       "port": 5175
     }
   ]
