@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Athlete, AssessmentSession, MovementAssessment, CMJData, CMJRep, ForceSymmetryData, JumpSymmetryData, TimedTest } from '../../../types'
+import { Athlete, AssessmentSession, MovementAssessment, CMJData, CMJRep, ForceSymmetryData, JumpSymmetryData, TimedTest, ProAgilityData } from '../../../types'
 import { useStore } from '../../../store/useStore'
 import { OVERHEAD_SQUAT_FAULTS, SINGLE_LEG_SQUAT_FAULTS } from '../../../data/benchmarks'
 import { scoreSession, getScoreBg, cmToInches, formatHeight } from '../../../utils/scoring'
@@ -492,6 +492,112 @@ function ForceSymModule({ title, subtitle, data, onSave, isJump }: {
   )
 }
 
+// ---- Pro Agility Module (L/R split) ----
+function ProAgilityModule({ data, onSave }: { data?: ProAgilityData; onSave: (d: ProAgilityData) => void }) {
+  const [open, setOpen] = useState(false)
+  const [right, setRight] = useState(data?.rightTimeSeconds?.toString() ?? '')
+  const [left, setLeft] = useState(data?.leftTimeSeconds?.toString() ?? '')
+  const [notes, setNotes] = useState(data?.notes ?? '')
+  const [images, setImages] = useState<string[]>(data?.images ?? [])
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    Array.from(e.target.files ?? []).forEach(file => {
+      const reader = new FileReader()
+      reader.onload = ev => setImages(prev => [...prev, ev.target!.result as string])
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const isComplete = data !== undefined
+  const r = parseFloat(right)
+  const l = parseFloat(left)
+  const avg = r > 0 && l > 0 ? ((r + l) / 2).toFixed(2) : null
+  const diff = r > 0 && l > 0 ? Math.abs(r - l).toFixed(3) : null
+
+  return (
+    <div className="card overflow-hidden">
+      <button onClick={() => setOpen(o => !o)} className="w-full flex items-center justify-between p-4 hover:bg-navy-700/40 transition-colors">
+        <div className="flex items-center gap-3">
+          {isComplete ? <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" /> : <Circle className="w-5 h-5 text-slate-600 flex-shrink-0" />}
+          <div className="text-left">
+            <div className="font-semibold text-white text-sm">Pro Agility (5-10-5)</div>
+            {isComplete
+              ? <div className="text-xs text-slate-500 mt-0.5">R: {data.rightTimeSeconds}s · L: {data.leftTimeSeconds}s</div>
+              : <div className="text-xs text-slate-500 mt-0.5">Laser timing gate · Right & Left</div>}
+          </div>
+        </div>
+        {open ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
+      </button>
+
+      {open && (
+        <div className="px-4 pb-4 space-y-4 border-t border-navy-700 pt-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label">Right Start (sec)</label>
+              <input type="number" step="0.001" value={right} onChange={e => setRight(e.target.value)}
+                className="input-field text-xl font-bold text-center" placeholder="0.000" />
+            </div>
+            <div>
+              <label className="label">Left Start (sec)</label>
+              <input type="number" step="0.001" value={left} onChange={e => setLeft(e.target.value)}
+                className="input-field text-xl font-bold text-center" placeholder="0.000" />
+            </div>
+          </div>
+          {avg && (
+            <div className="bg-navy-900 rounded-xl px-4 py-3 flex justify-between text-xs">
+              <div className="text-center">
+                <div className="text-slate-500 mb-0.5">Average</div>
+                <div className="font-black text-white text-base">{avg}s</div>
+              </div>
+              <div className="text-center">
+                <div className="text-slate-500 mb-0.5">Difference</div>
+                <div className={clsx('font-black text-base', parseFloat(diff!) <= 0.1 ? 'text-emerald-400' : parseFloat(diff!) <= 0.2 ? 'text-yellow-400' : 'text-red-400')}>
+                  {diff}s
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-slate-500 mb-0.5">Better Side</div>
+                <div className="font-black text-brand text-base">{r <= l ? 'Right' : 'Left'}</div>
+              </div>
+            </div>
+          )}
+          <div>
+            <label className="label">Notes</label>
+            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className="input-field resize-none text-sm" />
+          </div>
+          <div>
+            <label className="label">Upload Laser System Screenshots</label>
+            <div className="flex flex-wrap gap-2">
+              {images.map((img, i) => (
+                <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden bg-navy-900">
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <button onClick={() => setImages(prev => prev.filter((_, j) => j !== i))}
+                    className="absolute top-1 right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                    <X className="w-2.5 h-2.5 text-white" />
+                  </button>
+                </div>
+              ))}
+              <button onClick={() => fileRef.current?.click()}
+                className="w-20 h-20 rounded-xl border-2 border-dashed border-navy-600 hover:border-brand flex flex-col items-center justify-center gap-1 text-slate-600 hover:text-brand transition-colors">
+                <Upload className="w-5 h-5" /><span className="text-[9px] font-semibold">UPLOAD</span>
+              </button>
+              <input ref={fileRef} type="file" accept="image/*" multiple onChange={handleImage} className="hidden" />
+            </div>
+          </div>
+          <button
+            disabled={!right || !left}
+            onClick={() => { onSave({ rightTimeSeconds: parseFloat(right), leftTimeSeconds: parseFloat(left), notes, images }); setOpen(false) }}
+            className="btn-primary w-full flex items-center justify-center gap-2"
+          >
+            <Save className="w-4 h-4" /> Save Pro Agility
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ---- Timed Test Module ----
 function TimedModule({ title, subtitle, data, onSave, benchmark }: {
   title: string; subtitle: string; data?: TimedTest; onSave: (d: TimedTest) => void; benchmark?: number
@@ -672,15 +778,12 @@ export default function TestsTab({ athlete }: Props) {
             {/* Laser tests */}
             <div className="space-y-2 lg:col-span-2">
               <div className="text-xs text-slate-500 font-bold uppercase tracking-wider px-1">Laser Timing Tests</div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <TimedModule title="3/4 Court Sprint" subtitle="Laser timing gate" data={active.sprint34}
                   onSave={d => upd({ sprint34: d })} benchmark={bm.sprint34Seconds} />
-                <TimedModule title="Pro Agility (5-10-5)" subtitle="Laser timing gate" data={active.proAgility}
-                  onSave={d => upd({ proAgility: d })} benchmark={bm.shuttleSeconds} />
+                <ProAgilityModule data={active.proAgility} onSave={d => upd({ proAgility: d })} />
                 <TimedModule title="Lane Agility" subtitle="Laser timing gate" data={active.laneAgility}
                   onSave={d => upd({ laneAgility: d })} benchmark={bm.laneAgilitySeconds} />
-                <TimedModule title="Reactive Shuttle Run" subtitle="NBA combine shuttle" data={active.shuttle}
-                  onSave={d => upd({ shuttle: d })} benchmark={bm.shuttleSeconds} />
               </div>
             </div>
           </div>

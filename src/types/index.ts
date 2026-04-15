@@ -30,7 +30,7 @@ export interface AssessmentSession {
   laneAgility?: TimedTest
   sprint34?: TimedTest
   shuttle?: TimedTest
-  proAgility?: TimedTest
+  proAgility?: ProAgilityData
 }
 
 export interface MovementAssessment {
@@ -89,6 +89,13 @@ export interface JumpSymmetryData {
 
 export interface TimedTest {
   timeSeconds: number
+  notes?: string
+  images?: string[]
+}
+
+export interface ProAgilityData {
+  rightTimeSeconds: number
+  leftTimeSeconds: number
   notes?: string
   images?: string[]
 }

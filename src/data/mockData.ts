@@ -141,7 +141,7 @@ export const MOCK_ATHLETES: Athlete[] = [
         laneAgility: { timeSeconds: 10.94, notes: '2.65s (R) / 2.86s (L) per side. Left side impacting overall time slightly.', images: [] },
         sprint34: { timeSeconds: 3.31, notes: '3/4 court sprint within range (avg 3.20–3.30).', images: [] },
         shuttle: { timeSeconds: 2.97, notes: 'Reactive time significantly improved.', images: [] },
-        proAgility: { timeSeconds: 10.71, notes: 'Pro Agility (5-10-5): 10.71s — within range (avg 10.5–10.8).', images: [] },
+        proAgility: { rightTimeSeconds: 10.71, leftTimeSeconds: 10.86, notes: 'R: 10.71s / L: 10.86s — within range (avg 10.5–10.8). Right side slightly faster.', images: [] },
       },
     ],
   },
