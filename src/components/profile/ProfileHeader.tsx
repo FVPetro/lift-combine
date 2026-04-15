@@ -1,9 +1,73 @@
 import { useState } from 'react'
-import { Athlete } from '../../types'
+import { Athlete, AssessmentSession, ScoreBreakdown } from '../../types'
 import { useStore } from '../../store/useStore'
 import { formatHeight, scoreSession, getScoreColor } from '../../utils/scoring'
-import { Camera, Edit2, Check, X, User } from 'lucide-react'
+import { Camera, Edit2, Check, X, User, FileText } from 'lucide-react'
 import clsx from 'clsx'
+
+interface EvalSummary {
+  firstName: string
+  verdict: string       // bold phrase
+  context: string       // rest of first sentence
+  improvement: string   // second sentence about what to improve
+}
+
+function generateEvalSummary(athlete: Athlete, scores: ScoreBreakdown, session: AssessmentSession): EvalSummary {
+  const firstName = athlete.name.split(' ')[0]
+  const posLabel: Record<string, string> = {
+    PG: 'guard', SG: 'shooting guard', SF: 'wing', PF: 'power forward', C: 'center',
+  }
+  const pos = posLabel[athlete.position] ?? 'player'
+
+  // Determine top strengths for context
+  const cmj = session.cmj
+  const strengthPhrases: string[] = []
+  if (cmj?.rsi != null && cmj.rsi >= 1.0) strengthPhrases.push('reactive strength')
+  if (cmj?.peakPowerWkg != null && cmj.peakPowerWkg >= 58) strengthPhrases.push('explosiveness')
+  if (cmj?.rfdLabel?.toLowerCase().includes('above') || cmj?.rfdLabel?.toLowerCase().includes('strong')) strengthPhrases.push('force production speed')
+  if (scores.speed >= 85) strengthPhrases.push('straight-line speed')
+  if (scores.agility >= 85) strengthPhrases.push('change-of-direction quickness')
+  if (scores.symmetry >= 85) strengthPhrases.push('bilateral balance')
+  if (strengthPhrases.length === 0) strengthPhrases.push('physical effort and athleticism')
+
+  // Verdict phrase (bold)
+  let verdict = ''
+  if (scores.overall >= 90) verdict = 'presents an elite athletic profile'
+  else if (scores.overall >= 82) verdict = 'demonstrates an above-average athletic profile'
+  else if (scores.overall >= 72) verdict = 'shows a competitive athletic profile'
+  else if (scores.overall >= 60) verdict = 'displays a developing athletic profile'
+  else verdict = 'has measurable physical gaps to address'
+
+  // Context (what he's good at)
+  const topTwo = strengthPhrases.slice(0, 2)
+  const context = topTwo.length >= 2
+    ? `particularly in ${topTwo[0]} and ${topTwo[1]}.`
+    : `with notable strength in ${topTwo[0] ?? 'key physical domains'}.`
+
+  // Find lowest scoring area for improvement sentence
+  const domains = [
+    { area: 'change-of-direction efficiency', action: 'decelerate and change direction more efficiently', value: scores.agility },
+    { area: 'movement quality', action: 'improve joint mobility and movement mechanics', value: scores.mobility },
+    { area: 'bilateral symmetry', action: 'reduce left-right force asymmetry to lower injury risk', value: scores.symmetry },
+    { area: 'linear speed', action: 'improve straight-line speed and sprint mechanics', value: scores.speed },
+    { area: 'explosive power', action: 'develop lower-body explosiveness and jump height', value: scores.power },
+  ].filter(d => d.value > 0).sort((a, b) => a.value - b.value)
+
+  // Check pro agility imbalance
+  let improvement = ''
+  if (session.proAgility) {
+    const diff = Math.abs(session.proAgility.rightTimeSeconds - session.proAgility.leftTimeSeconds)
+    const slowSide = session.proAgility.leftTimeSeconds > session.proAgility.rightTimeSeconds ? 'left' : 'right'
+    if (diff > 0.12) {
+      improvement = `Improving his ability to ${domains[0]?.action ?? 'address physical gaps'} — particularly on the ${slowSide} side — will elevate his overall performance relative to other ${pos} prospects.`
+    }
+  }
+  if (!improvement && domains.length > 0) {
+    improvement = `Improving his ability to ${domains[0].action} will elevate his movement and overall performance relative to other ${pos} prospects.`
+  }
+
+  return { firstName, verdict, context, improvement }
+}
 
 interface Props {
   athlete: Athlete
@@ -33,6 +97,7 @@ export default function ProfileHeader({ athlete }: Props) {
 
   const latestSession = athlete.sessions[athlete.sessions.length - 1]
   const scores = latestSession ? scoreSession(latestSession, athlete.position) : null
+  const evalSummary = latestSession && scores ? generateEvalSummary(athlete, scores, latestSession) : null
 
   const saveEdit = () => {
     updateAthlete(athlete.id, draft)
@@ -214,6 +279,23 @@ export default function ProfileHeader({ athlete }: Props) {
             {athlete.notes}
           </p>
         ) : null}
+
+        {/* Auto-generated Evaluation Summary */}
+        {evalSummary && !editing && (
+          <div className="mt-4 bg-navy-800/60 border border-navy-700 rounded-2xl p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <FileText className="w-3.5 h-3.5 text-brand" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Evaluation Summary</span>
+              <span className="text-[9px] font-semibold text-brand/60 border border-brand/20 bg-brand/5 px-1.5 py-0.5 rounded-full ml-auto">Auto-generated</span>
+            </div>
+            <p className="text-sm text-slate-300 leading-relaxed">
+              {evalSummary.firstName}{' '}
+              <strong className="text-white font-bold">{evalSummary.verdict}</strong>,{' '}
+              {evalSummary.context}{' '}
+              {evalSummary.improvement}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )
