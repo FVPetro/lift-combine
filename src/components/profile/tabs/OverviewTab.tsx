@@ -165,7 +165,7 @@ export default function OverviewTab({ athlete }: Props) {
             {getScoreLabel(scores.overall)}
           </div>
           {/* Overall tooltip */}
-          <div className="absolute bottom-full left-0 mb-2 w-64 bg-navy-800 border border-navy-600 text-slate-300 text-[11px] rounded-xl p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
+          <div className="absolute top-full left-0 mt-2 w-64 bg-navy-800 border border-navy-600 text-slate-300 text-[11px] rounded-xl p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
             <div className="font-bold text-white text-xs mb-1">Overall Readiness Score</div>
             <div className="text-slate-400 mb-2">Composite of all 5 domains. This is the number scouts and agents should focus on first.</div>
             <div className="space-y-1">
@@ -196,7 +196,7 @@ export default function OverviewTab({ athlete }: Props) {
                 </div>
               )}
               {/* Rich tooltip */}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-navy-800 border border-navy-600 text-[11px] rounded-xl p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-navy-800 border border-navy-600 text-[11px] rounded-xl p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
                 <div className="font-bold text-white text-xs mb-0.5">{info.label} Score</div>
                 <div className="text-slate-400 mb-1">{info.what}</div>
                 <div className="text-slate-500 text-[10px] mb-2 italic">{info.how}</div>
