@@ -199,6 +199,8 @@ function CMJModule({ data, onSave }: { data?: CMJData; onSave: (d: CMJData) => v
             <div className="font-semibold text-white text-sm">CMJ — ForceDecks</div>
             {data && <div className="text-xs text-slate-500 mt-0.5">
               {cmToInches(data.jumpHeightCm)} jump · {data.asymmetryPct.toFixed(1)}% asym
+              {data.peakPowerWkg ? <span className="ml-1 text-brand">· {data.peakPowerWkg} W/kg</span> : null}
+              {data.rsi ? <span className="ml-1 text-cyan-400">· RSI {data.rsi}</span> : null}
               {data.reps?.length ? <span className="ml-1 text-emerald-400">· {data.reps.length} reps</span> : null}
             </div>}
           </div>
@@ -225,6 +227,34 @@ function CMJModule({ data, onSave }: { data?: CMJData; onSave: (d: CMJData) => v
                   value={(vals[k] as number) || ''} onChange={n(k)} className="input-field text-sm py-2" />
               </div>
             ))}
+          </div>
+
+          {/* ForceDecks Performance Metrics */}
+          <div className="bg-navy-900 rounded-xl p-3 space-y-3">
+            <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">ForceDecks Performance</div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="label text-[10px]">Power Output (W/kg)</label>
+                <input type="number" step="0.1" placeholder="e.g. 60"
+                  value={(vals.peakPowerWkg as number) || ''}
+                  onChange={e => setVals(prev => ({ ...prev, peakPowerWkg: parseFloat(e.target.value) || undefined }))}
+                  className="input-field text-sm py-2" />
+              </div>
+              <div>
+                <label className="label text-[10px]">RSI Score</label>
+                <input type="number" step="0.01" placeholder="e.g. 1.0"
+                  value={(vals.rsi as number) || ''}
+                  onChange={e => setVals(prev => ({ ...prev, rsi: parseFloat(e.target.value) || undefined }))}
+                  className="input-field text-sm py-2" />
+              </div>
+            </div>
+            <div>
+              <label className="label text-[10px]">Force Production Speed (RFD Category)</label>
+              <input type="text" placeholder="e.g. Above Average, Strong, Elite"
+                value={(vals.rfdLabel as string) || ''}
+                onChange={e => setVals(prev => ({ ...prev, rfdLabel: e.target.value || undefined }))}
+                className="input-field text-sm py-2" />
+            </div>
           </div>
 
           {/* Per-rep force inputs */}
@@ -642,11 +672,13 @@ export default function TestsTab({ athlete }: Props) {
             {/* Laser tests */}
             <div className="space-y-2 lg:col-span-2">
               <div className="text-xs text-slate-500 font-bold uppercase tracking-wider px-1">Laser Timing Tests</div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <TimedModule title="Lane Agility" subtitle="Laser timing gate" data={active.laneAgility}
-                  onSave={d => upd({ laneAgility: d })} benchmark={bm.laneAgilitySeconds} />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <TimedModule title="3/4 Court Sprint" subtitle="Laser timing gate" data={active.sprint34}
                   onSave={d => upd({ sprint34: d })} benchmark={bm.sprint34Seconds} />
+                <TimedModule title="Pro Agility (5-10-5)" subtitle="Laser timing gate" data={active.proAgility}
+                  onSave={d => upd({ proAgility: d })} benchmark={bm.shuttleSeconds} />
+                <TimedModule title="Lane Agility" subtitle="Laser timing gate" data={active.laneAgility}
+                  onSave={d => upd({ laneAgility: d })} benchmark={bm.laneAgilitySeconds} />
                 <TimedModule title="Reactive Shuttle Run" subtitle="NBA combine shuttle" data={active.shuttle}
                   onSave={d => upd({ shuttle: d })} benchmark={bm.shuttleSeconds} />
               </div>

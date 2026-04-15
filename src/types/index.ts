@@ -30,6 +30,7 @@ export interface AssessmentSession {
   laneAgility?: TimedTest
   sprint34?: TimedTest
   shuttle?: TimedTest
+  proAgility?: TimedTest
 }
 
 export interface MovementAssessment {
@@ -51,6 +52,9 @@ export interface CMJData {
   eccMeanForceN?: number
   asymmetryPct: number
   peakPowerW: number
+  peakPowerWkg?: number
+  rsi?: number
+  rfdLabel?: string
   flightTimeMs: number
   contractionTimeMs: number
   // Aggregate stats for force metrics
