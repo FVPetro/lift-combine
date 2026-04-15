@@ -82,12 +82,75 @@ export default function OverviewTab({ athlete }: Props) {
     },
   ]
 
-  const domainLabels: [keyof typeof scores, string, string][] = [
-    ['speed', 'Speed', 'Based on 3/4 court sprint time compared to position benchmarks.'],
-    ['power', 'Power', 'Based on countermovement jump (CMJ) height — measures explosive leg power.'],
-    ['agility', 'Agility', 'Based on lane agility and shuttle run times — measures change of direction speed.'],
-    ['mobility', 'Mobility', 'Based on hip mobility and flexibility assessments — measures joint range of motion.'],
-    ['symmetry', 'Symmetry', 'Based on left/right asymmetry across jump and hip force tests — lower asymmetry = higher score.'],
+  interface DomainInfo {
+    key: keyof typeof scores
+    label: string
+    what: string
+    how: string
+    ranges: { min: number; max: number; label: string; color: string; meaning: string }[]
+  }
+
+  const domainInfo: DomainInfo[] = [
+    {
+      key: 'speed',
+      label: 'Speed',
+      what: 'How fast this player moves compared to draft-level players at their position.',
+      how: 'Measured by 3/4 court sprint & reactive shuttle run vs. position average.',
+      ranges: [
+        { min: 90, max: 100, label: 'Elite', color: 'text-emerald-400', meaning: 'Top-tier speed — stands out at any combine.' },
+        { min: 75, max: 89, label: 'Above Avg', color: 'text-green-400', meaning: 'Competitive speed — no concerns for scouts.' },
+        { min: 60, max: 74, label: 'Average', color: 'text-yellow-400', meaning: 'Functional but not a strength — monitor.' },
+        { min: 0, max: 59, label: 'Needs Work', color: 'text-red-400', meaning: 'Speed gap — needs training before combine.' },
+      ],
+    },
+    {
+      key: 'power',
+      label: 'Power',
+      what: 'How explosive this player is off the floor — finishing, rebounding, and first-step burst.',
+      how: 'Measured by countermovement jump (CMJ) height via ForceDecks vs. position average.',
+      ranges: [
+        { min: 90, max: 100, label: 'Elite', color: 'text-emerald-400', meaning: 'Elite explosiveness — can dominate above the rim.' },
+        { min: 75, max: 89, label: 'Above Avg', color: 'text-green-400', meaning: 'Good power — competitive at the next level.' },
+        { min: 60, max: 74, label: 'Average', color: 'text-yellow-400', meaning: 'Average athleticism — explosive training recommended.' },
+        { min: 0, max: 59, label: 'Needs Work', color: 'text-red-400', meaning: 'Power deficit — prioritize before combine.' },
+      ],
+    },
+    {
+      key: 'agility',
+      label: 'Agility',
+      what: 'How quickly this player can cut, change direction, and react laterally.',
+      how: 'Measured by lane agility drill vs. position average.',
+      ranges: [
+        { min: 90, max: 100, label: 'Elite', color: 'text-emerald-400', meaning: 'Elite lateral quickness — can guard any position.' },
+        { min: 75, max: 89, label: 'Above Avg', color: 'text-green-400', meaning: 'Solid change of direction — scouts will notice.' },
+        { min: 60, max: 74, label: 'Average', color: 'text-yellow-400', meaning: 'Functional agility — watch in game situations.' },
+        { min: 0, max: 59, label: 'Needs Work', color: 'text-red-400', meaning: 'Lateral movement is a concern — address now.' },
+      ],
+    },
+    {
+      key: 'mobility',
+      label: 'Mobility',
+      what: 'Joint range of motion and overall movement quality — a key indicator of injury risk.',
+      how: 'Based on overhead squat and single-leg squat fault count from movement screens.',
+      ranges: [
+        { min: 90, max: 100, label: 'Excellent', color: 'text-emerald-400', meaning: 'Clean movement — very low injury risk.' },
+        { min: 75, max: 89, label: 'Good', color: 'text-green-400', meaning: 'Minor restrictions — manageable with maintenance.' },
+        { min: 60, max: 74, label: 'Fair', color: 'text-yellow-400', meaning: 'Noticeable restrictions — needs targeted mobility work.' },
+        { min: 0, max: 59, label: 'Concern', color: 'text-red-400', meaning: 'Movement limitations — elevated injury risk flag.' },
+      ],
+    },
+    {
+      key: 'symmetry',
+      label: 'Symmetry',
+      what: 'Left vs. right side balance — imbalances are the leading cause of non-contact injuries.',
+      how: 'Measured by CMJ force asymmetry, hip strength, and single-leg hop tests.',
+      ranges: [
+        { min: 90, max: 100, label: 'Excellent', color: 'text-emerald-400', meaning: 'Highly balanced — very low injury risk.' },
+        { min: 75, max: 89, label: 'Good', color: 'text-green-400', meaning: 'Minor imbalance — within safe range.' },
+        { min: 60, max: 74, label: 'Moderate', color: 'text-yellow-400', meaning: 'Noticeable imbalance — address in training.' },
+        { min: 0, max: 59, label: 'High Risk', color: 'text-red-400', meaning: 'Significant asymmetry — medical review recommended.' },
+      ],
+    },
   ]
 
   return (
@@ -101,23 +164,61 @@ export default function OverviewTab({ athlete }: Props) {
           <div className={clsx('text-[10px] font-black mt-1 px-2 py-0.5 rounded-full border', getScoreBg(scores.overall))}>
             {getScoreLabel(scores.overall)}
           </div>
-          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
-            Weighted composite of all domain scores — speed, power, agility, mobility, and symmetry.
+          {/* Overall tooltip */}
+          <div className="absolute bottom-full left-0 mb-2 w-64 bg-navy-800 border border-navy-600 text-slate-300 text-[11px] rounded-xl p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
+            <div className="font-bold text-white text-xs mb-1">Overall Readiness Score</div>
+            <div className="text-slate-400 mb-2">Composite of all 5 domains. This is the number scouts and agents should focus on first.</div>
+            <div className="space-y-1">
+              {[
+                { range: '90–100', label: 'Elite', color: 'text-emerald-400', desc: 'Ready — physically exceptional' },
+                { range: '75–89', label: 'Above Avg', color: 'text-green-400', desc: 'Competitive — no red flags' },
+                { range: '60–74', label: 'Average', color: 'text-yellow-400', desc: 'Functional — some gaps to close' },
+                { range: '0–59', label: 'Needs Work', color: 'text-red-400', desc: 'Not ready — address before combine' },
+              ].map(r => (
+                <div key={r.range} className={clsx('flex items-center justify-between', scores.overall >= r.range.split('–').map(Number)[0] && scores.overall <= (r.range.includes('+') ? 100 : r.range.split('–').map(Number)[1]) ? 'opacity-100' : 'opacity-40')}>
+                  <span className={clsx('font-bold', r.color)}>{r.range}</span>
+                  <span className="text-slate-300 ml-2 flex-1">{r.desc}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        {domainLabels.map(([key, label, tooltip]) => {
-          const val = scores[key]
+        {domainInfo.map((info) => {
+          const val = scores[info.key]
+          const activeRange = info.ranges.find(r => val >= r.min && val <= r.max)
           return (
-            <div key={key} className="card p-4 flex flex-col items-center justify-center relative group">
+            <div key={info.key} className="card p-4 flex flex-col items-center justify-center relative group">
               <div className={clsx('text-3xl font-black', getScoreColor(val))}>{val || '—'}</div>
-              <div className="text-slate-500 text-[10px] font-bold uppercase tracking-wider mt-1">{label}</div>
+              <div className="text-slate-500 text-[10px] font-bold uppercase tracking-wider mt-1">{info.label}</div>
               {val > 0 && (
                 <div className="flex items-center gap-1 mt-1">
-                  <TrendIcon values={sessions.map(s => scoreSession(s, position)[key])} />
+                  <TrendIcon values={sessions.map(s => scoreSession(s, position)[info.key])} />
                 </div>
               )}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
-                {tooltip}
+              {/* Rich tooltip */}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-navy-800 border border-navy-600 text-[11px] rounded-xl p-3 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30">
+                <div className="font-bold text-white text-xs mb-0.5">{info.label} Score</div>
+                <div className="text-slate-400 mb-1">{info.what}</div>
+                <div className="text-slate-500 text-[10px] mb-2 italic">{info.how}</div>
+                <div className="space-y-1 border-t border-navy-600 pt-2">
+                  {info.ranges.map(r => {
+                    const isActive = val >= r.min && val <= r.max
+                    return (
+                      <div key={r.min} className={clsx('flex gap-2 items-start rounded px-1.5 py-1 transition-all', isActive ? 'bg-navy-700' : 'opacity-40')}>
+                        <span className={clsx('font-black text-[10px] w-14 flex-shrink-0', r.color)}>{r.min === 0 ? `0–${r.max}` : `${r.min}–${r.max}`}</span>
+                        <div>
+                          <span className={clsx('font-bold', r.color)}>{r.label}</span>
+                          <span className="text-slate-400 ml-1">{r.meaning}</span>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+                {activeRange && (
+                  <div className={clsx('mt-2 text-center text-[10px] font-bold rounded-lg py-1', activeRange.color)}>
+                    Current: {val} — {activeRange.label}
+                  </div>
+                )}
               </div>
             </div>
           )

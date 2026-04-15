@@ -1,14 +1,14 @@
 import { AssessmentSession, Position, ScoreBreakdown } from '../types'
 import { BENCHMARKS } from '../data/benchmarks'
 
-// Normalize a "higher is better" metric against benchmark → 0-110
+// Normalize a "higher is better" metric against benchmark → 0-100
 function scoreHigher(value: number, benchmark: number): number {
-  return Math.min(110, Math.round((value / benchmark) * 100))
+  return Math.min(100, Math.round((value / benchmark) * 100))
 }
 
-// Normalize a "lower is better" metric against benchmark → 0-110
+// Normalize a "lower is better" metric against benchmark → 0-100
 function scoreLower(value: number, benchmark: number): number {
-  return Math.min(110, Math.round((benchmark / value) * 100))
+  return Math.min(100, Math.round((benchmark / value) * 100))
 }
 
 // Score asymmetry: 0% = 100, 10% = 60, 20% = 20, >25% = 0
