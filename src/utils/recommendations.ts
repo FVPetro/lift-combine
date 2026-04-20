@@ -15,9 +15,6 @@ export function generateRecommendations(athlete: Athlete, session: AssessmentSes
   const injuryFlags: string[] = []
 
   // --- SYMMETRY / INJURY FLAGS ---
-  if (session.singleLegHip && session.singleLegHip.asymmetryPct > 15) {
-    injuryFlags.push(`Hip force asymmetry at ${session.singleLegHip.asymmetryPct.toFixed(1)}% — above 15% clinical threshold. Sports medicine consult recommended.`)
-  }
   if (session.singleLegJump && session.singleLegJump.lsi < 85) {
     injuryFlags.push(`Single-leg jump LSI at ${session.singleLegJump.lsi.toFixed(1)}% — below 85% return-to-sport threshold. Monitor closely.`)
   }

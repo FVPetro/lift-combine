@@ -317,10 +317,10 @@ export default function OverviewTab({ athlete }: Props) {
       )}
 
       {/* Asymmetry summary */}
-      {(latest.cmj || latest.singleLegHip || latest.singleLegJump) && (
+      {(latest.cmj || latest.singleLegJump) && (
         <div className="card p-5">
           <h3 className="font-bold text-white text-sm mb-4">Asymmetry Summary <span className="text-slate-500 font-normal text-xs ml-1">— latest session</span></h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {latest.cmj && (
               <div className="bg-navy-900 rounded-xl p-3 relative group">
                 <div className="text-slate-500 text-xs font-semibold mb-2">CMJ Bilateral</div>
@@ -328,20 +328,8 @@ export default function OverviewTab({ athlete }: Props) {
                   {latest.cmj.asymmetryPct.toFixed(1)}%
                 </div>
                 <div className="text-slate-600 text-xs mt-0.5">asymmetry index</div>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
                   Measures left vs. right force imbalance during a bilateral countermovement jump. Calculated as: |Left − Right| / Average × 100. Lower % = more symmetrical. Under 10% is ideal.
-                </div>
-              </div>
-            )}
-            {latest.singleLegHip && (
-              <div className="bg-navy-900 rounded-xl p-3 relative group">
-                <div className="text-slate-500 text-xs font-semibold mb-2">Hip Force</div>
-                <div className={clsx('text-2xl font-black', getAsymmetryColor(latest.singleLegHip.asymmetryPct))}>
-                  {latest.singleLegHip.asymmetryPct.toFixed(1)}%
-                </div>
-                <div className="text-slate-600 text-xs mt-0.5">L/R asymmetry</div>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
-                  Compares peak isometric hip force between left and right legs. Calculated as: |Left − Right| / Average × 100. Over 15% exceeds the clinical threshold and warrants a sports medicine review.
                 </div>
               </div>
             )}
@@ -352,18 +340,12 @@ export default function OverviewTab({ athlete }: Props) {
                   {latest.singleLegJump.lsi.toFixed(1)}%
                 </div>
                 <div className="text-slate-600 text-xs mt-0.5">limb symmetry index</div>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
                   Limb Symmetry Index — compares single-leg hop height between left and right. Calculated as: Weaker Leg / Stronger Leg × 100. 95%+ is ideal; below 85% is the return-to-sport threshold.
                 </div>
               </div>
             )}
           </div>
-          {(latest.singleLegHip?.asymmetryPct ?? 0) > 15 && (
-            <div className="flex items-start gap-2 mt-3 bg-red-500/10 border border-red-500/30 rounded-xl p-3">
-              <AlertTriangle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-red-300 text-xs">Hip force asymmetry exceeds 15% clinical threshold. Sports medicine consultation recommended.</p>
-            </div>
-          )}
         </div>
       )}
 

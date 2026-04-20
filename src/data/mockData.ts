@@ -73,13 +73,6 @@ export const MOCK_ATHLETES: Athlete[] = [
           notes: 'Power output 63–65 W/kg — above average for position (avg 55–62). RSI ~2.0 below range (avg 2.5–3.5). Force production speed below optimal; slower force expression observed. Eccentric/force absorption control below optimal. Testing post-workout — follow-up under fresh conditions recommended.',
           images: [],
         },
-        singleLegHip: {
-          leftForceN: 388,
-          rightForceN: 402,
-          asymmetryPct: 3.6,
-          notes: 'Good hip strength output relative to body weight. Well within normal symmetry range.',
-          images: [],
-        },
         singleLegJump: {
           leftHeightCm: 46.2,
           rightHeightCm: 47.8,
@@ -150,13 +143,6 @@ export const MOCK_ATHLETES: Athlete[] = [
           notes: 'Good flight time to contraction ratio. Slight right-side dominance.',
           images: [],
         },
-        singleLegHip: {
-          leftForceN: 310,
-          rightForceN: 342,
-          asymmetryPct: 10.3,
-          notes: 'Left hip abductor 10% weaker. Correlates with valgus on SL squat.',
-          images: [],
-        },
         singleLegJump: {
           leftHeightCm: 44.2,
           rightHeightCm: 48.6,
@@ -198,13 +184,6 @@ export const MOCK_ATHLETES: Athlete[] = [
           flightTimeMs: 625,
           contractionTimeMs: 810,
           notes: 'CMJ Power Output ~60 W/kg (Avg 50–58). RSI ~1.0 (Avg 0.8–1.0). Force production speed: Above Average.',
-          images: [],
-        },
-        singleLegHip: {
-          leftForceN: 334,
-          rightForceN: 351,
-          asymmetryPct: 4.8,
-          notes: 'Hip asymmetry markedly improved. Left side added 24N.',
           images: [],
         },
         singleLegJump: {
@@ -263,13 +242,6 @@ export const MOCK_ATHLETES: Athlete[] = [
           flightTimeMs: 660,
           contractionTimeMs: 730,
           notes: 'Elite jump height. Very well balanced. RSI-mod above norm for SG.',
-          images: [],
-        },
-        singleLegHip: {
-          leftForceN: 398,
-          rightForceN: 412,
-          asymmetryPct: 3.5,
-          notes: 'Strong and symmetric hip output. Well within norm.',
           images: [],
         },
         singleLegJump: {
@@ -332,13 +304,6 @@ const _REMOVED_DEMO_ATHLETES: Athlete[] = [
           notes: 'Asymmetry at 13.7% — clinically significant. Left side underperforming.',
           images: [],
         },
-        singleLegHip: {
-          leftForceN: 284,
-          rightForceN: 346,
-          asymmetryPct: 21.8,
-          notes: 'Very high asymmetry. Left hip 22% weaker — injury risk flag.',
-          images: [],
-        },
         singleLegJump: {
           leftHeightCm: 39.4,
           rightHeightCm: 50.2,
@@ -377,13 +342,6 @@ const _REMOVED_DEMO_ATHLETES: Athlete[] = [
           flightTimeMs: 648,
           contractionTimeMs: 762,
           notes: 'Asymmetry dropped from 13.7% to 9.2%. Still above ideal threshold.',
-          images: [],
-        },
-        singleLegHip: {
-          leftForceN: 318,
-          rightForceN: 352,
-          asymmetryPct: 10.7,
-          notes: 'Significant improvement. Left hip added 34N. Still above 10% — continue protocol.',
           images: [],
         },
         singleLegJump: {
@@ -443,13 +401,6 @@ const _REMOVED_DEMO_ATHLETES: Athlete[] = [
           notes: 'High peak force but slower contraction time. Power conversion needs work.',
           images: [],
         },
-        singleLegHip: {
-          leftForceN: 412,
-          rightForceN: 440,
-          asymmetryPct: 6.8,
-          notes: 'Good hip force output relative to body weight.',
-          images: [],
-        },
         singleLegJump: {
           leftHeightCm: 42.0,
           rightHeightCm: 44.8,
@@ -505,13 +456,6 @@ const _REMOVED_DEMO_ATHLETES: Athlete[] = [
           flightTimeMs: 612,
           contractionTimeMs: 810,
           notes: 'Above benchmark for center. Peak power output is very high.',
-          images: [],
-        },
-        singleLegHip: {
-          leftForceN: 468,
-          rightForceN: 484,
-          asymmetryPct: 3.4,
-          notes: 'Excellent hip strength. Well above benchmark. Very symmetric.',
           images: [],
         },
         singleLegJump: {

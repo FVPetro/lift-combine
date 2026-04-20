@@ -57,7 +57,6 @@ export function scoreSession(session: AssessmentSession, position: Position): Sc
   // Symmetry (asymmetry from force tests)
   const symmetryScores: number[] = []
   if (session.cmj) symmetryScores.push(scoreAsymmetry(session.cmj.asymmetryPct))
-  if (session.singleLegHip) symmetryScores.push(scoreAsymmetry(session.singleLegHip.asymmetryPct))
   if (session.singleLegJump) symmetryScores.push(scoreAsymmetry(100 - session.singleLegJump.lsi))
   const symmetry = symmetryScores.length ? Math.round(symmetryScores.reduce((a, b) => a + b, 0) / symmetryScores.length) : 0
 

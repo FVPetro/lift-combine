@@ -769,8 +769,6 @@ export default function TestsTab({ athlete }: Props) {
             <div className="space-y-2">
               <div className="text-xs text-slate-500 font-bold uppercase tracking-wider px-1">ForceDecks Tests</div>
               <CMJModule data={active.cmj} onSave={d => upd({ cmj: d })} />
-              <ForceSymModule title="Single Leg Hip (ForceDecks)" subtitle="ForceDecks isometric hip test"
-                data={active.singleLegHip} onSave={d => upd({ singleLegHip: d })} />
               <ForceSymModule title="Single Leg Hop (ForceDecks)" subtitle="LSI & height symmetry"
                 data={active.singleLegJump} onSave={d => upd({ singleLegJump: d })} isJump />
             </div>

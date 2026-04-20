@@ -174,15 +174,6 @@ export default function ExportTab({ athlete }: Props) {
                   <td className="text-slate-500 text-xs print:text-gray-400">{latest.cmj.asymmetryPct.toFixed(1)}% asymmetry</td>
                 </tr>
               )}
-              {latest.singleLegHip && (
-                <tr>
-                  <td className="py-2.5 text-slate-300 print:text-black">Single Leg Hip</td>
-                  <td className="text-center font-bold text-white print:text-black">{latest.singleLegHip.leftForceN}N / {latest.singleLegHip.rightForceN}N</td>
-                  <td className="text-center text-slate-500 print:text-gray-400">L/R</td>
-                  <td className="text-center"><ScoreDot score={Math.max(0, 100 - latest.singleLegHip.asymmetryPct * 4)} /></td>
-                  <td className="text-slate-500 text-xs print:text-gray-400">{latest.singleLegHip.asymmetryPct.toFixed(1)}% asymmetry</td>
-                </tr>
-              )}
               {latest.singleLegJump && (
                 <tr>
                   <td className="py-2.5 text-slate-300 print:text-black">Single Leg Hop</td>

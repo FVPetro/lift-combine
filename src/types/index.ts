@@ -25,7 +25,6 @@ export interface AssessmentSession {
   overheadSquat?: MovementAssessment
   singleLegSquat?: MovementAssessment
   cmj?: CMJData
-  singleLegHip?: ForceSymmetryData
   singleLegJump?: JumpSymmetryData
   laneAgility?: TimedTest
   sprint34?: TimedTest
