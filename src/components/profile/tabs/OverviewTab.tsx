@@ -82,6 +82,13 @@ export default function OverviewTab({ athlete }: Props) {
       unit: 's',
       higher: false,
     },
+    {
+      label: 'Quick Board',
+      athlete: latest.quickBoard?.touches ?? null,
+      benchmark: bm.quickBoardTouches,
+      unit: ' touches',
+      higher: true,
+    },
   ]
 
   interface DomainInfo {

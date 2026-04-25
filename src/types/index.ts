@@ -30,6 +30,7 @@ export interface AssessmentSession {
   sprint34?: TimedTest
   shuttle?: TimedTest
   proAgility?: ProAgilityData
+  quickBoard?: QuickBoardData
 }
 
 export interface MovementAssessment {
@@ -95,6 +96,12 @@ export interface TimedTest {
 export interface ProAgilityData {
   rightTimeSeconds: number
   leftTimeSeconds: number
+  notes?: string
+  images?: string[]
+}
+
+export interface QuickBoardData {
+  touches: number
   notes?: string
   images?: string[]
 }

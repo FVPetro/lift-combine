@@ -9,11 +9,13 @@ export interface PositionBenchmark {
   laneAgilitySeconds: number
   sprint34Seconds: number
   proAgilitySeconds: number
+  quickBoardTouches: number
   // elite thresholds
   eliteCmjCm: number
   eliteLaneAgility: number
   eliteSprint34: number
   eliteProAgility: number
+  eliteQuickBoard: number
 }
 
 export const BENCHMARKS: Record<Position, PositionBenchmark> = {
@@ -26,10 +28,12 @@ export const BENCHMARKS: Record<Position, PositionBenchmark> = {
     laneAgilitySeconds: 11.10,
     sprint34Seconds: 3.20,
     proAgilitySeconds: 3.00,
+    quickBoardTouches: 97,
     eliteCmjCm: 86.4,   // 34"
     eliteLaneAgility: 10.6,
     eliteSprint34: 3.00,
     eliteProAgility: 2.80,
+    eliteQuickBoard: 108,
   },
   SG: {
     heightInches: 75.5,
@@ -40,10 +44,12 @@ export const BENCHMARKS: Record<Position, PositionBenchmark> = {
     laneAgilitySeconds: 11.15,
     sprint34Seconds: 3.20,
     proAgilitySeconds: 2.95,
+    quickBoardTouches: 94,
     eliteCmjCm: 88.9,   // 35"
     eliteLaneAgility: 10.5,
     eliteSprint34: 2.97,
     eliteProAgility: 2.75,
+    eliteQuickBoard: 105,
   },
   SF: {
     heightInches: 78,
@@ -54,10 +60,12 @@ export const BENCHMARKS: Record<Position, PositionBenchmark> = {
     laneAgilitySeconds: 11.35,
     sprint34Seconds: 3.30,
     proAgilitySeconds: 3.00,
+    quickBoardTouches: 91,
     eliteCmjCm: 88.9,   // 35"
     eliteLaneAgility: 10.7,
     eliteSprint34: 3.05,
     eliteProAgility: 2.85,
+    eliteQuickBoard: 102,
   },
   PF: {
     heightInches: 80,
@@ -68,10 +76,12 @@ export const BENCHMARKS: Record<Position, PositionBenchmark> = {
     laneAgilitySeconds: 11.55,
     sprint34Seconds: 3.30,
     proAgilitySeconds: 3.10,
+    quickBoardTouches: 89,
     eliteCmjCm: 86.4,   // 34"
     eliteLaneAgility: 10.9,
     eliteSprint34: 3.10,
     eliteProAgility: 2.90,
+    eliteQuickBoard: 100,
   },
   C: {
     heightInches: 82,
@@ -82,10 +92,12 @@ export const BENCHMARKS: Record<Position, PositionBenchmark> = {
     laneAgilitySeconds: 11.80,
     sprint34Seconds: 3.40,
     proAgilitySeconds: 3.15,
+    quickBoardTouches: 88,
     eliteCmjCm: 81.3,   // 32"
     eliteLaneAgility: 11.1,
     eliteSprint34: 3.20,
     eliteProAgility: 2.95,
+    eliteQuickBoard: 98,
   },
 }
 

@@ -43,9 +43,10 @@ export function scoreSession(session: AssessmentSession, position: Position): Sc
   if (session.cmj) powerScores.push(scoreHigher(session.cmj.jumpHeightCm, bm.cmjHeightCm))
   const power = powerScores.length ? Math.round(powerScores.reduce((a, b) => a + b, 0) / powerScores.length) : 0
 
-  // Agility (lane agility)
+  // Agility (lane agility + quick board reaction)
   const agilityScores: number[] = []
   if (session.laneAgility) agilityScores.push(scoreLower(session.laneAgility.timeSeconds, bm.laneAgilitySeconds))
+  if (session.quickBoard) agilityScores.push(scoreHigher(session.quickBoard.touches, bm.quickBoardTouches))
   const agility = agilityScores.length ? Math.round(agilityScores.reduce((a, b) => a + b, 0) / agilityScores.length) : 0
 
   // Mobility (movement quality from squat assessments)

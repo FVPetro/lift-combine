@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Athlete, AssessmentSession, MovementAssessment, CMJData, CMJRep, ForceSymmetryData, JumpSymmetryData, TimedTest, ProAgilityData } from '../../../types'
+import { Athlete, AssessmentSession, MovementAssessment, CMJData, CMJRep, ForceSymmetryData, JumpSymmetryData, TimedTest, ProAgilityData, QuickBoardData } from '../../../types'
 import { useStore } from '../../../store/useStore'
 import { OVERHEAD_SQUAT_FAULTS, SINGLE_LEG_SQUAT_FAULTS } from '../../../data/benchmarks'
 import { scoreSession, getScoreBg, cmToInches, formatHeight } from '../../../utils/scoring'
@@ -598,6 +598,70 @@ function ProAgilityModule({ data, onSave }: { data?: ProAgilityData; onSave: (d:
   )
 }
 
+// ---- Quick Board Reaction Module ----
+function QuickBoardModule({ data, onSave, benchmark }: { data?: QuickBoardData; onSave: (d: QuickBoardData) => void; benchmark?: number }) {
+  const [open, setOpen] = useState(false)
+  const [touches, setTouches] = useState(data?.touches?.toString() ?? '')
+  const [notes, setNotes] = useState(data?.notes ?? '')
+  const isComplete = data !== undefined
+  const t = parseInt(touches)
+  const vsAvg = benchmark && t > 0 ? Math.min(100, Math.round((t / benchmark) * 100)) : null
+
+  return (
+    <div className="card overflow-hidden">
+      <button onClick={() => setOpen(o => !o)} className="w-full flex items-center justify-between p-4 hover:bg-navy-700/40 transition-colors">
+        <div className="flex items-center gap-3">
+          {isComplete ? <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" /> : <Circle className="w-5 h-5 text-slate-600 flex-shrink-0" />}
+          <div className="text-left">
+            <div className="font-semibold text-white text-sm">Quick Board Reaction</div>
+            <div className="text-xs text-slate-500 mt-0.5">{isComplete ? `${data.touches} touches` : 'Reaction board · total touches'}</div>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          {isComplete && benchmark && vsAvg !== null && (
+            <span className={clsx('text-xs font-bold px-2.5 py-1 rounded-full border', getScoreBg(vsAvg))}>
+              {vsAvg >= 100 ? 'ELITE' : `${vsAvg}%`}
+            </span>
+          )}
+          {open ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
+        </div>
+      </button>
+
+      {open && (
+        <div className="px-4 pb-4 space-y-4 border-t border-navy-700 pt-3">
+          <div>
+            <label className="label">Total Touches</label>
+            <input
+              type="number" step="1" value={touches}
+              onChange={e => setTouches(e.target.value)}
+              className="input-field text-2xl font-bold text-center" placeholder="0"
+            />
+            {benchmark && t > 0 && (
+              <div className="text-center mt-1.5 text-xs text-slate-500">
+                Position avg: <span className="text-white font-semibold">{benchmark} touches</span>
+                {t >= benchmark
+                  ? <span className="text-emerald-400 ml-2 font-bold">✓ ABOVE BENCHMARK by {t - benchmark}</span>
+                  : <span className="text-orange-400 ml-2">{benchmark - t} below benchmark</span>}
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="label">Notes</label>
+            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className="input-field resize-none text-sm" placeholder="Reaction time, dominant side, context..." />
+          </div>
+          <button
+            disabled={!touches}
+            onClick={() => { onSave({ touches: parseInt(touches), notes }); setOpen(false) }}
+            className="btn-primary w-full flex items-center justify-center gap-2"
+          >
+            <Save className="w-4 h-4" /> Save Quick Board
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ---- Timed Test Module ----
 function TimedModule({ title, subtitle, data, onSave, benchmark }: {
   title: string; subtitle: string; data?: TimedTest; onSave: (d: TimedTest) => void; benchmark?: number
@@ -775,13 +839,14 @@ export default function TestsTab({ athlete }: Props) {
 
             {/* Laser tests */}
             <div className="space-y-2 lg:col-span-2">
-              <div className="text-xs text-slate-500 font-bold uppercase tracking-wider px-1">Laser Timing Tests</div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="text-xs text-slate-500 font-bold uppercase tracking-wider px-1">Laser Timing & Reaction Tests</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <TimedModule title="3/4 Court Sprint" subtitle="Laser timing gate" data={active.sprint34}
                   onSave={d => upd({ sprint34: d })} benchmark={bm.sprint34Seconds} />
                 <ProAgilityModule data={active.proAgility} onSave={d => upd({ proAgility: d })} />
                 <TimedModule title="Lane Agility" subtitle="Laser timing gate" data={active.laneAgility}
                   onSave={d => upd({ laneAgility: d })} benchmark={bm.laneAgilitySeconds} />
+                <QuickBoardModule data={active.quickBoard} onSave={d => upd({ quickBoard: d })} benchmark={bm.quickBoardTouches} />
               </div>
             </div>
           </div>

@@ -31,6 +31,70 @@ export const MOCK_USERS: MockUser[] = [
 
 export const MOCK_ATHLETES: Athlete[] = [
   {
+    id: 'a5',
+    name: 'Christoph Tilly',
+    position: 'C',
+    heightInches: 84,
+    weightLbs: 244,
+    wingspanInches: 84,
+    standingReachInches: 111,
+    dateOfBirth: '2003-04-15',
+    agency: 'Lift Sports Management',
+    photo: '/athletes/christoph-tilly.jpg',
+    notes: 'NBA-level size with movement metrics that compare favorably against big-man benchmarks. Strong lower-body power output, balanced concentric force production, and above-average reactive strength for his size class. Primary area to address: eccentric braking asymmetry (12% right bias) during force absorption.',
+    createdAt: '2026-04-23',
+    sessions: [
+      {
+        id: 's1a5',
+        athleteId: 'a5',
+        date: '2026-04-23',
+        label: 'Pre-Draft Evaluation',
+        overheadSquat: {
+          faults: ['Limited shoulder mobility / arms drift'],
+          notes: 'Good mobility for his size. Minor overhead restriction. Overall movement quality above average for a center.',
+          images: [],
+        },
+        singleLegSquat: {
+          faults: ['Insufficient depth'],
+          notes: 'Hip mobility slightly limiting depth — expected at this size. Single-leg stability is solid.',
+          images: [],
+        },
+        cmj: {
+          jumpHeightCm: 70.2,
+          rsiModified: 0.38,
+          asymmetryPct: 1.4,
+          peakPowerW: 5640,
+          peakPowerWkg: 51,
+          flightTimeMs: 525,
+          contractionTimeMs: 656,
+          notes: 'Flight:Contraction ratio 0.8 — efficient force strategy for his size. Peak power 51 W/kg within NBA range (avg 48–55). Concentric force asymmetry 1.4% right bias — excellent bilateral balance. Eccentric braking asymmetry 12% right bias — mild, target <10%. Impulse symmetry 1.1% left bias — within target. Active stiffness asymmetry 6.2% left bias — acceptable range.',
+          images: [],
+        },
+        laneAgility: {
+          timeSeconds: 12.16,
+          notes: '12.16s — average for position (NBA C avg ~11.8–12.4s).',
+          images: [],
+        },
+        sprint34: {
+          timeSeconds: 3.60,
+          notes: '3.60s — within expected range for a center (NBA avg ~3.45–3.65s).',
+          images: [],
+        },
+        proAgility: {
+          rightTimeSeconds: 2.54,
+          leftTimeSeconds: 2.58,
+          notes: 'Avg 2.56s — above average mobility for a center (NBA avg ~2.50–2.75s). Symmetric output, 0.04s gap.',
+          images: [],
+        },
+        quickBoard: {
+          touches: 99,
+          notes: '99 touches — above average processing speed (NBA C avg ~85–100).',
+          images: [],
+        },
+      },
+    ],
+  },
+  {
     id: 'a4',
     name: 'Vincent Iwuchukwu',
     position: 'C',

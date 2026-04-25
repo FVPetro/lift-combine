@@ -212,6 +212,15 @@ export default function ExportTab({ athlete }: Props) {
                   <td className="text-slate-500 text-xs print:text-gray-400">{latest.proAgility.notes}</td>
                 </tr>
               )}
+              {latest.quickBoard && (
+                <tr>
+                  <td className="py-2.5 text-slate-300 print:text-black">Quick Board Reaction</td>
+                  <td className="text-center font-bold text-white print:text-black">{latest.quickBoard.touches} touches</td>
+                  <td className="text-center text-slate-500 print:text-gray-400">{bm.quickBoardTouches} avg</td>
+                  <td className="text-center"><ScoreDot score={Math.min(100, Math.round((latest.quickBoard.touches / bm.quickBoardTouches) * 100))} /></td>
+                  <td className="text-slate-500 text-xs print:text-gray-400">{latest.quickBoard.notes}</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
