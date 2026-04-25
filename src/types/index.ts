@@ -1,5 +1,10 @@
 export type Position = 'PG' | 'SG' | 'SF' | 'PF' | 'C'
 
+export interface CustomInsights {
+  exercises?: Record<string, string[]>   // keyed by recommendation title
+  warmup?: WarmupExercise[]
+}
+
 export interface Athlete {
   id: string
   name: string
@@ -15,6 +20,7 @@ export interface Athlete {
   notes?: string
   sessions: AssessmentSession[]
   createdAt: string
+  customInsights?: CustomInsights
 }
 
 export interface AssessmentSession {
