@@ -40,6 +40,7 @@ export const MOCK_ATHLETES: Athlete[] = [
     standingReachInches: 101,
     dateOfBirth: '2003-11-15',
     agency: 'Lift Sports Management',
+    photo: '/athletes/chase-ross.jpg',
     notes: 'Elite speed and agility athlete with NBA-level quickness for the position. Lane agility and pro agility metrics rank among the top at the combine. Force plate profile shows balanced force production with acceptable braking asymmetry. Weight pending confirmation.',
     createdAt: '2026-04-25',
     sessions: [
