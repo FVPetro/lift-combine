@@ -88,7 +88,7 @@ export const useStore = create<AppStore>()(
     }),
     {
       name: 'lift-combine-storage',
-      version: 6,
+      version: 7,
       partialize: (state) => ({
         currentUser: state.currentUser,
         athletes: state.athletes,
