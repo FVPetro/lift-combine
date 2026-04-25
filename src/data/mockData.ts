@@ -31,6 +31,59 @@ export const MOCK_USERS: MockUser[] = [
 
 export const MOCK_ATHLETES: Athlete[] = [
   {
+    id: 'a6',
+    name: 'Chase Ross',
+    position: 'SG',
+    heightInches: 77,
+    weightLbs: 200,
+    wingspanInches: 79.25,
+    standingReachInches: 101,
+    dateOfBirth: '2003-11-15',
+    agency: 'Lift Sports Management',
+    notes: 'Elite speed and agility athlete with NBA-level quickness for the position. Lane agility and pro agility metrics rank among the top at the combine. Force plate profile shows balanced force production with acceptable braking asymmetry. Weight pending confirmation.',
+    createdAt: '2026-04-25',
+    sessions: [
+      {
+        id: 's1a6',
+        athleteId: 'a6',
+        date: '2026-04-25',
+        label: 'Pre-Draft Evaluation',
+        cmj: {
+          jumpHeightCm: 74.5,
+          rsiModified: 0.60,
+          asymmetryPct: 2.7,
+          peakPowerW: 4700,
+          peakPowerWkg: 51.8,
+          flightTimeMs: 550,
+          contractionTimeMs: 920,
+          notes: 'Peak power 51.8 W/kg (range 50.5–52.7) — within NBA range for guards. Flight:Contraction ratio 0.6 (range 0.6–0.8). Peak Force avg ~5085 N. Concentric peak force asymmetry avg 2.7% left bias (range 0.7% right – 5.2% left) — excellent bilateral balance. Eccentric braking impulse asymmetry avg 1.6% right bias (range 1.8% left – 9.7% right) — within acceptable range.',
+          images: [],
+        },
+        laneAgility: {
+          timeSeconds: 10.50,
+          notes: '10.50s — elite for position (SG avg ~11.0–11.3s). Top-tier lateral quickness.',
+          images: [],
+        },
+        sprint34: {
+          timeSeconds: 3.33,
+          notes: '3.33s — above average for SG (avg ~3.20–3.30s). Strong linear speed.',
+          images: [],
+        },
+        proAgility: {
+          rightTimeSeconds: 2.31,
+          leftTimeSeconds: 2.48,
+          notes: 'R: 2.31s / L: 2.48s — avg 2.40s, well above SG benchmark (~2.90–3.00s). Right side notably faster. 0.17s gap — directional imbalance to monitor.',
+          images: [],
+        },
+        quickBoard: {
+          touches: 106,
+          notes: '106 total touches (Left: 54 / Right: 52) — elite processing speed, above SG average (~94). Near-equal L/R distribution.',
+          images: [],
+        },
+      },
+    ],
+  },
+  {
     id: 'a5',
     name: 'Christoph Tilly',
     position: 'C',
