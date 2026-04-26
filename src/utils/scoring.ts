@@ -58,7 +58,11 @@ export function scoreSession(session: AssessmentSession, position: Position): Sc
   // Symmetry (asymmetry from force tests)
   const symmetryScores: number[] = []
   if (session.cmj) symmetryScores.push(scoreAsymmetry(session.cmj.asymmetryPct))
-  if (session.singleLegJump) symmetryScores.push(scoreAsymmetry(100 - session.singleLegJump.lsi))
+  if (session.repeatedHop) symmetryScores.push(scoreAsymmetry(session.repeatedHop.impulseAsymmetryPct))
+  if (session.dropJump) {
+    const avgAsym = (session.dropJump.impactAsymmetryPct + session.dropJump.landingAsymmetryPct) / 2
+    symmetryScores.push(scoreAsymmetry(avgAsym))
+  }
   const symmetry = symmetryScores.length ? Math.round(symmetryScores.reduce((a, b) => a + b, 0) / symmetryScores.length) : 0
 
   // Overall — weighted average of completed domains

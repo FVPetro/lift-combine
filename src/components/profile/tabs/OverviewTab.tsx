@@ -324,31 +324,43 @@ export default function OverviewTab({ athlete }: Props) {
       )}
 
       {/* Asymmetry summary */}
-      {(latest.cmj || latest.singleLegJump) && (
+      {(latest.cmj || latest.repeatedHop || latest.dropJump) && (
         <div className="card p-5">
           <h3 className="font-bold text-white text-sm mb-4">Asymmetry Summary <span className="text-slate-500 font-normal text-xs ml-1">— latest session</span></h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {latest.cmj && (
               <div className="bg-navy-900 rounded-xl p-3 relative group">
-                <div className="text-slate-500 text-xs font-semibold mb-2">CMJ Bilateral</div>
+                <div className="text-slate-500 text-xs font-semibold mb-2">CMJ Concentric</div>
                 <div className={clsx('text-2xl font-black', getAsymmetryColor(latest.cmj.asymmetryPct))}>
                   {latest.cmj.asymmetryPct.toFixed(1)}%
                 </div>
-                <div className="text-slate-600 text-xs mt-0.5">asymmetry index</div>
+                <div className="text-slate-600 text-xs mt-0.5">force asymmetry</div>
                 <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
-                  Measures left vs. right force imbalance during a bilateral countermovement jump. Calculated as: |Left − Right| / Average × 100. Lower % = more symmetrical. Under 10% is ideal.
+                  Measures left vs. right force imbalance during the concentric phase of the CMJ. Under 10% is ideal; above 15% is a clinical concern.
                 </div>
               </div>
             )}
-            {latest.singleLegJump && (
+            {latest.repeatedHop && (
               <div className="bg-navy-900 rounded-xl p-3 relative group">
-                <div className="text-slate-500 text-xs font-semibold mb-2">SL Hop LSI</div>
-                <div className={clsx('text-2xl font-black', getAsymmetryColor(100 - latest.singleLegJump.lsi))}>
-                  {latest.singleLegJump.lsi.toFixed(1)}%
+                <div className="text-slate-500 text-xs font-semibold mb-2">Repeated Hop Impulse</div>
+                <div className={clsx('text-2xl font-black', getAsymmetryColor(latest.repeatedHop.impulseAsymmetryPct))}>
+                  {latest.repeatedHop.impulseAsymmetryPct.toFixed(1)}%
                 </div>
-                <div className="text-slate-600 text-xs mt-0.5">limb symmetry index</div>
+                <div className="text-slate-600 text-xs mt-0.5">impulse asymmetry</div>
                 <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
-                  Limb Symmetry Index — compares single-leg hop height between left and right. Calculated as: Weaker Leg / Stronger Leg × 100. 95%+ is ideal; below 85% is the return-to-sport threshold.
+                  Measures bilateral impulse asymmetry during repeated hopping. Reflects reactive loading symmetry. Under 10% is target; above 15% warrants monitoring.
+                </div>
+              </div>
+            )}
+            {latest.dropJump && (
+              <div className="bg-navy-900 rounded-xl p-3 relative group">
+                <div className="text-slate-500 text-xs font-semibold mb-2">Drop Jump Landing</div>
+                <div className={clsx('text-2xl font-black', getAsymmetryColor((latest.dropJump.impactAsymmetryPct + latest.dropJump.landingAsymmetryPct) / 2))}>
+                  {((latest.dropJump.impactAsymmetryPct + latest.dropJump.landingAsymmetryPct) / 2).toFixed(1)}%
+                </div>
+                <div className="text-slate-600 text-xs mt-0.5">avg impact / landing asym</div>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-56 bg-navy-700 border border-navy-600 text-slate-300 text-[11px] rounded-xl px-3 py-2 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20 text-center">
+                  Average of impact and landing asymmetry from the drop jump. Measures bilateral braking and absorption strategy. Under 10% is target.
                 </div>
               </div>
             )}

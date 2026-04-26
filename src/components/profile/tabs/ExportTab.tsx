@@ -174,13 +174,22 @@ export default function ExportTab({ athlete }: Props) {
                   <td className="text-slate-500 text-xs print:text-gray-400">{latest.cmj.asymmetryPct.toFixed(1)}% asymmetry</td>
                 </tr>
               )}
-              {latest.singleLegJump && (
+              {latest.repeatedHop && (
                 <tr>
-                  <td className="py-2.5 text-slate-300 print:text-black">Single Leg Hop</td>
-                  <td className="text-center font-bold text-white print:text-black">LSI {latest.singleLegJump.lsi.toFixed(1)}%</td>
-                  <td className="text-center text-slate-500 print:text-gray-400">&gt;95% ideal</td>
-                  <td className="text-center"><ScoreDot score={Math.max(0, latest.singleLegJump.lsi - 10)} /></td>
-                  <td className="text-slate-500 text-xs print:text-gray-400">L: {cmToInches(latest.singleLegJump.leftHeightCm)} R: {cmToInches(latest.singleLegJump.rightHeightCm)}</td>
+                  <td className="py-2.5 text-slate-300 print:text-black">Repeated Hop Test</td>
+                  <td className="text-center font-bold text-white print:text-black">RSI {latest.repeatedHop.rsi} · {latest.repeatedHop.peakForceN}N</td>
+                  <td className="text-center text-slate-500 print:text-gray-400">RSI &gt;2.5 ideal</td>
+                  <td className="text-center"><ScoreDot score={Math.max(0, Math.round(100 - latest.repeatedHop.impulseAsymmetryPct * 4))} /></td>
+                  <td className="text-slate-500 text-xs print:text-gray-400">{latest.repeatedHop.impulseAsymmetryPct.toFixed(1)}% impulse asym · CoV {latest.repeatedHop.cov.toFixed(1)}%</td>
+                </tr>
+              )}
+              {latest.dropJump && (
+                <tr>
+                  <td className="py-2.5 text-slate-300 print:text-black">Drop Jump</td>
+                  <td className="text-center font-bold text-white print:text-black">RSI {latest.dropJump.rsi} · {latest.dropJump.groundContactTimeMs}ms GCT</td>
+                  <td className="text-center text-slate-500 print:text-gray-400">&lt;10% asym ideal</td>
+                  <td className="text-center"><ScoreDot score={Math.max(0, Math.round(100 - ((latest.dropJump.impactAsymmetryPct + latest.dropJump.landingAsymmetryPct) / 2) * 4))} /></td>
+                  <td className="text-slate-500 text-xs print:text-gray-400">Impact {latest.dropJump.impactAsymmetryPct.toFixed(1)}% / Landing {latest.dropJump.landingAsymmetryPct.toFixed(1)}% asym</td>
                 </tr>
               )}
               {latest.laneAgility && (

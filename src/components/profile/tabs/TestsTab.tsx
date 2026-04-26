@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Athlete, AssessmentSession, MovementAssessment, CMJData, CMJRep, ForceSymmetryData, JumpSymmetryData, TimedTest, ProAgilityData, QuickBoardData } from '../../../types'
+import { Athlete, AssessmentSession, MovementAssessment, CMJData, CMJRep, TimedTest, ProAgilityData, QuickBoardData, RepeatedHopData, DropJumpData } from '../../../types'
 import { useStore } from '../../../store/useStore'
 import { OVERHEAD_SQUAT_FAULTS, SINGLE_LEG_SQUAT_FAULTS } from '../../../data/benchmarks'
 import { scoreSession, getScoreBg, cmToInches, formatHeight } from '../../../utils/scoring'
@@ -400,17 +400,16 @@ function CMJModule({ data, onSave }: { data?: CMJData; onSave: (d: CMJData) => v
   )
 }
 
-// ---- Force Symmetry Module (SL Hip / SL Jump) ----
-function ForceSymModule({ title, subtitle, data, onSave, isJump }: {
-  title: string; subtitle: string; data?: ForceSymmetryData | JumpSymmetryData; onSave: (d: any) => void; isJump?: boolean
-}) {
+// ---- Repeated Hop Module ----
+function RepeatedHopModule({ data, onSave }: { data?: RepeatedHopData; onSave: (d: RepeatedHopData) => void }) {
   const [open, setOpen] = useState(false)
-  const [vals, setVals] = useState<Record<string, number>>(
-    data ? Object.fromEntries(Object.entries(data).filter(([, v]) => typeof v === 'number').map(([k, v]) => [k, v as number])) : {}
-  )
-  const [notes, setNotes] = useState((data as any)?.notes ?? '')
-  const [images, setImages] = useState<string[]>((data as any)?.images ?? [])
+  const [vals, setVals] = useState<Partial<RepeatedHopData>>(data ?? {})
+  const [notes, setNotes] = useState(data?.notes ?? '')
+  const [images, setImages] = useState<string[]>(data?.images ?? [])
   const fileRef = useRef<HTMLInputElement>(null)
+
+  const n = (k: keyof RepeatedHopData) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setVals(prev => ({ ...prev, [k]: parseFloat(e.target.value) || 0 }))
 
   const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     Array.from(e.target.files ?? []).forEach(file => {
@@ -420,14 +419,7 @@ function ForceSymModule({ title, subtitle, data, onSave, isJump }: {
     })
   }
 
-  const fields: [string, string, string][] = isJump
-    ? [['leftHeightCm', 'Left Hop Height (cm)', '44'], ['rightHeightCm', 'Right Hop Height (cm)', '46'], ['leftRSIMod', 'Left RSI-Mod', '0.38'], ['rightRSIMod', 'Right RSI-Mod', '0.41'], ['leftMeanRSI', 'Left Mean RSI (Flight/Contact)', '0.42'], ['rightMeanRSI', 'Right Mean RSI (Flight/Contact)', '0.44'], ['lsi', 'Limb Symmetry Index (%)', '95.6']]
-    : [['leftForceN', 'Left Force (N)', '320'], ['rightForceN', 'Right Force (N)', '340'], ['asymmetryPct', 'Asymmetry (%)', '6.3']]
-
   const isComplete = data !== undefined
-  const leftVal = isJump ? (vals.leftHeightCm ?? 0) : (vals.leftForceN ?? 0)
-  const rightVal = isJump ? (vals.rightHeightCm ?? 0) : (vals.rightForceN ?? 0)
-  const asymPct = isJump ? (100 - (vals.lsi ?? 100)) : (vals.asymmetryPct ?? 0)
 
   return (
     <div className="card overflow-hidden">
@@ -435,8 +427,12 @@ function ForceSymModule({ title, subtitle, data, onSave, isJump }: {
         <div className="flex items-center gap-3">
           {isComplete ? <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" /> : <Circle className="w-5 h-5 text-slate-600 flex-shrink-0" />}
           <div className="text-left">
-            <div className="font-semibold text-white text-sm">{title}</div>
-            <div className="text-xs text-slate-500 mt-0.5">{isComplete ? subtitle : 'Not yet assessed'}</div>
+            <div className="font-semibold text-white text-sm">Repeated Hop Test — ForceDecks</div>
+            {isComplete
+              ? <div className="text-xs text-slate-500 mt-0.5">
+                  RSI {data.rsi} · {data.impulseAsymmetryPct.toFixed(1)}% impulse asym · CoV {data.cov.toFixed(1)}%
+                </div>
+              : <div className="text-xs text-slate-500 mt-0.5">Reactive strength · bilateral symmetry</div>}
           </div>
         </div>
         {open ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
@@ -445,27 +441,43 @@ function ForceSymModule({ title, subtitle, data, onSave, isJump }: {
       {open && (
         <div className="px-4 pb-4 space-y-4 border-t border-navy-700 pt-3">
           <div className="grid grid-cols-2 gap-3">
-            {fields.map(([k, label, ph]) => (
-              <div key={k} className={k === 'lsi' || k === 'asymmetryPct' ? 'col-span-2' : ''}>
-                <label className="label text-[10px]">{label}</label>
-                <input type="number" step="0.01" placeholder={ph}
-                  value={vals[k] || ''} onChange={e => setVals(prev => ({ ...prev, [k]: parseFloat(e.target.value) || 0 }))}
-                  className="input-field text-sm py-2" />
-              </div>
-            ))}
-          </div>
-          {(leftVal > 0 && rightVal > 0) && (
-            <div className="bg-navy-900 rounded-xl p-3">
-              <AsymmetryBar leftValue={leftVal} rightValue={rightVal} asymmetryPct={asymPct}
-                unit={isJump ? 'cm' : 'N'} />
+            <div>
+              <label className="label text-[10px]">Reactive Strength Index (RSI)</label>
+              <input type="number" step="0.01" placeholder="2.5" value={vals.rsi || ''}
+                onChange={n('rsi')} className="input-field text-sm py-2" />
             </div>
-          )}
+            <div>
+              <label className="label text-[10px]">Peak Force (N)</label>
+              <input type="number" step="1" placeholder="5500" value={vals.peakForceN || ''}
+                onChange={n('peakForceN')} className="input-field text-sm py-2" />
+            </div>
+            <div>
+              <label className="label text-[10px]">Contact Time (ms)</label>
+              <input type="number" step="1" placeholder="200" value={vals.contactTimeMs || ''}
+                onChange={n('contactTimeMs')} className="input-field text-sm py-2" />
+            </div>
+            <div>
+              <label className="label text-[10px]">Coefficient of Variation — CoV (%)</label>
+              <input type="number" step="0.1" placeholder="8.5" value={vals.cov || ''}
+                onChange={n('cov')} className="input-field text-sm py-2" />
+            </div>
+            <div>
+              <label className="label text-[10px]">Impulse Asymmetry (%)</label>
+              <input type="number" step="0.1" placeholder="2.5" value={vals.impulseAsymmetryPct || ''}
+                onChange={n('impulseAsymmetryPct')} className="input-field text-sm py-2" />
+            </div>
+            <div>
+              <label className="label text-[10px]">Active Stiffness Asymmetry (%)</label>
+              <input type="number" step="0.1" placeholder="3.0" value={vals.activeStiffnessAsymmetryPct || ''}
+                onChange={n('activeStiffnessAsymmetryPct')} className="input-field text-sm py-2" />
+            </div>
+          </div>
           <div>
             <label className="label">Notes</label>
             <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className="input-field resize-none text-sm" />
           </div>
           <div>
-            <label className="label">Upload VALD Graphs</label>
+            <label className="label">Upload VALD Graphs / Screenshots</label>
             <div className="flex flex-wrap gap-2">
               {images.map((img, i) => (
                 <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden bg-navy-900">
@@ -483,8 +495,120 @@ function ForceSymModule({ title, subtitle, data, onSave, isJump }: {
               <input ref={fileRef} type="file" accept="image/*" multiple onChange={handleImage} className="hidden" />
             </div>
           </div>
-          <button onClick={() => { onSave({ ...vals, notes, images }); setOpen(false) }} className="btn-primary w-full flex items-center justify-center gap-2">
-            <Save className="w-4 h-4" /> Save
+          <button
+            disabled={!vals.rsi}
+            onClick={() => { onSave({ ...vals as RepeatedHopData, notes, images }); setOpen(false) }}
+            className="btn-primary w-full flex items-center justify-center gap-2"
+          >
+            <Save className="w-4 h-4" /> Save Repeated Hop
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ---- Drop Jump Module ----
+function DropJumpModule({ data, onSave }: { data?: DropJumpData; onSave: (d: DropJumpData) => void }) {
+  const [open, setOpen] = useState(false)
+  const [vals, setVals] = useState<Partial<DropJumpData>>(data ?? {})
+  const [notes, setNotes] = useState(data?.notes ?? '')
+  const [images, setImages] = useState<string[]>(data?.images ?? [])
+  const fileRef = useRef<HTMLInputElement>(null)
+
+  const n = (k: keyof DropJumpData) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setVals(prev => ({ ...prev, [k]: parseFloat(e.target.value) || 0 }))
+
+  const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    Array.from(e.target.files ?? []).forEach(file => {
+      const reader = new FileReader()
+      reader.onload = ev => setImages(prev => [...prev, ev.target!.result as string])
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const isComplete = data !== undefined
+
+  return (
+    <div className="card overflow-hidden">
+      <button onClick={() => setOpen(o => !o)} className="w-full flex items-center justify-between p-4 hover:bg-navy-700/40 transition-colors">
+        <div className="flex items-center gap-3">
+          {isComplete ? <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" /> : <Circle className="w-5 h-5 text-slate-600 flex-shrink-0" />}
+          <div className="text-left">
+            <div className="font-semibold text-white text-sm">Drop Jump — ForceDecks</div>
+            {isComplete
+              ? <div className="text-xs text-slate-500 mt-0.5">
+                  RSI {data.rsi} · Impact {data.impactAsymmetryPct.toFixed(1)}% / Landing {data.landingAsymmetryPct.toFixed(1)}% asym
+                </div>
+              : <div className="text-xs text-slate-500 mt-0.5">Landing mechanics · impact symmetry</div>}
+          </div>
+        </div>
+        {open ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
+      </button>
+
+      {open && (
+        <div className="px-4 pb-4 space-y-4 border-t border-navy-700 pt-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label text-[10px]">RSI</label>
+              <input type="number" step="0.01" placeholder="2.0" value={vals.rsi || ''}
+                onChange={n('rsi')} className="input-field text-sm py-2" />
+            </div>
+            <div>
+              <label className="label text-[10px]">Ground Contact Time (ms)</label>
+              <input type="number" step="1" placeholder="180" value={vals.groundContactTimeMs || ''}
+                onChange={n('groundContactTimeMs')} className="input-field text-sm py-2" />
+            </div>
+            <div>
+              <label className="label text-[10px]">Peak Impact Force (N)</label>
+              <input type="number" step="1" placeholder="6500" value={vals.peakImpactForceN || ''}
+                onChange={n('peakImpactForceN')} className="input-field text-sm py-2" />
+            </div>
+            <div>
+              <label className="label text-[10px]">Peak Landing Force (N)</label>
+              <input type="number" step="1" placeholder="5800" value={vals.peakLandingForceN || ''}
+                onChange={n('peakLandingForceN')} className="input-field text-sm py-2" />
+            </div>
+            <div>
+              <label className="label text-[10px]">Impact Asymmetry (%)</label>
+              <input type="number" step="0.1" placeholder="4.2" value={vals.impactAsymmetryPct || ''}
+                onChange={n('impactAsymmetryPct')} className="input-field text-sm py-2" />
+            </div>
+            <div>
+              <label className="label text-[10px]">Landing Asymmetry (%)</label>
+              <input type="number" step="0.1" placeholder="3.8" value={vals.landingAsymmetryPct || ''}
+                onChange={n('landingAsymmetryPct')} className="input-field text-sm py-2" />
+            </div>
+          </div>
+          <div>
+            <label className="label">Notes</label>
+            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className="input-field resize-none text-sm" />
+          </div>
+          <div>
+            <label className="label">Upload VALD Graphs / Screenshots</label>
+            <div className="flex flex-wrap gap-2">
+              {images.map((img, i) => (
+                <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden bg-navy-900">
+                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <button onClick={() => setImages(prev => prev.filter((_, j) => j !== i))}
+                    className="absolute top-1 right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+                    <X className="w-2.5 h-2.5 text-white" />
+                  </button>
+                </div>
+              ))}
+              <button onClick={() => fileRef.current?.click()}
+                className="w-20 h-20 rounded-xl border-2 border-dashed border-navy-600 hover:border-brand flex flex-col items-center justify-center gap-1 text-slate-600 hover:text-brand transition-colors">
+                <Upload className="w-5 h-5" /><span className="text-[9px] font-semibold">UPLOAD</span>
+              </button>
+              <input ref={fileRef} type="file" accept="image/*" multiple onChange={handleImage} className="hidden" />
+            </div>
+          </div>
+          <button
+            disabled={!vals.rsi}
+            onClick={() => { onSave({ ...vals as DropJumpData, notes, images }); setOpen(false) }}
+            className="btn-primary w-full flex items-center justify-center gap-2"
+          >
+            <Save className="w-4 h-4" /> Save Drop Jump
           </button>
         </div>
       )}
@@ -833,8 +957,8 @@ export default function TestsTab({ athlete }: Props) {
             <div className="space-y-2">
               <div className="text-xs text-slate-500 font-bold uppercase tracking-wider px-1">ForceDecks Tests</div>
               <CMJModule data={active.cmj} onSave={d => upd({ cmj: d })} />
-              <ForceSymModule title="Single Leg Hop (ForceDecks)" subtitle="LSI & height symmetry"
-                data={active.singleLegJump} onSave={d => upd({ singleLegJump: d })} isJump />
+              <RepeatedHopModule data={active.repeatedHop} onSave={d => upd({ repeatedHop: d })} />
+              <DropJumpModule data={active.dropJump} onSave={d => upd({ dropJump: d })} />
             </div>
 
             {/* Laser tests */}

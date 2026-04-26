@@ -37,6 +37,8 @@ export interface AssessmentSession {
   shuttle?: TimedTest
   proAgility?: ProAgilityData
   quickBoard?: QuickBoardData
+  repeatedHop?: RepeatedHopData
+  dropJump?: DropJumpData
 }
 
 export interface MovementAssessment {
@@ -108,6 +110,28 @@ export interface ProAgilityData {
 
 export interface QuickBoardData {
   touches: number
+  notes?: string
+  images?: string[]
+}
+
+export interface RepeatedHopData {
+  rsi: number
+  peakForceN: number
+  impulseAsymmetryPct: number
+  activeStiffnessAsymmetryPct: number
+  contactTimeMs: number
+  cov: number
+  notes?: string
+  images?: string[]
+}
+
+export interface DropJumpData {
+  rsi: number
+  peakImpactForceN: number
+  peakLandingForceN: number
+  impactAsymmetryPct: number
+  landingAsymmetryPct: number
+  groundContactTimeMs: number
   notes?: string
   images?: string[]
 }
